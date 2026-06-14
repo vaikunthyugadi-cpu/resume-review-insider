@@ -675,3 +675,11 @@ html[data-theme="dark"] label input, html[data-theme="dark"] label select, html[
   .auth-card { padding:23px; }
   .dashboard-topbar { padding-right:68px; }
 }
+
+
+/* Final typography and contrast corrections */
+.auth-brand-copy h1 { font-family: Arial, Inter, ui-sans-serif, system-ui, sans-serif; font-weight: 700; }
+.eyebrow-light, .auth-brand-panel .eyebrow { color: #dcecff; }
+.auth-brand-panel blockquote footer { color: #d7e8f8; }
+.review-preview h3, .score-card strong, .benefit-section h2, .claim-panel h2 { font-family: Arial, Inter, ui-sans-serif, system-ui, sans-serif; }
+html[data-theme="dark"] .eyebrow-light, html[data-theme="dark"] .auth-brand-panel .eyebrow { color: #e4f1ff; }
