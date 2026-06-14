@@ -368,3 +368,87 @@ html[data-theme="dark"] .row-arrow { border-color: var(--line); }
   .theme-toggle > span:last-child { display: none; }
   .marketing-nav { padding-right: 72px; }
 }
+
+
+/* Admin console and UI alignment polish */
+body, main, section, article, aside, div { min-width: 0; }
+button, .button { touch-action: manipulation; }
+.row-main strong, .row-main small, .queue-row strong, .queue-row small { overflow-wrap: anywhere; }
+.panel, .stat-card, .queue-row, .data-row { max-width: 100%; }
+.dashboard-content { width: 100%; }
+.admin-content { max-width: 1440px; }
+.admin-sidebar { background: linear-gradient(180deg, #102f33 0%, #0a2226 100%); }
+.admin-topbar { box-shadow: 0 5px 24px rgba(16,47,51,.04); }
+.admin-metrics { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 14px; margin-bottom: 22px; }
+.admin-section { scroll-margin-top: 105px; }
+.admin-section + .admin-section { margin-top: 18px; }
+.admin-notice { position: sticky; z-index: 8; top: 96px; margin: 0 0 16px; box-shadow: var(--shadow); }
+.admin-count { flex: 0 0 auto; padding: 7px 10px; color: var(--mint-dark); background: var(--mint-soft); border-radius: 999px; font-size: 9px; font-weight: 900; }
+.admin-table-wrap { width: 100%; overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; }
+.admin-table { width: 100%; min-width: 790px; border-collapse: collapse; font-size: 10px; }
+.admin-table th { padding: 11px 13px; color: var(--muted); background: #f6f9f7; border-bottom: 1px solid var(--line); font-size: 8px; letter-spacing: .7px; text-align: left; text-transform: uppercase; }
+.admin-table td { padding: 13px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+.admin-table tr:last-child td { border-bottom: 0; }
+.admin-table tbody tr:hover { background: rgba(101,216,178,.045); }
+.admin-table strong, .admin-table small { display: block; }
+.admin-table strong { color: var(--ink); font-size: 10px; }
+.admin-table small { max-width: 230px; margin-top: 4px; color: var(--muted); overflow-wrap: anywhere; }
+.admin-action, .admin-actions button { min-height: 32px; padding: 7px 10px; color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 8px; font-size: 9px; font-weight: 850; white-space: nowrap; }
+.admin-action:hover, .admin-actions button:hover { color: var(--navy); background: var(--mint); border-color: var(--mint); }
+.admin-action:disabled, .admin-actions button:disabled { cursor: wait; opacity: .55; }
+.admin-card-list { display: grid; gap: 9px; }
+.admin-person-card { display: grid; grid-template-columns: 40px minmax(180px,1fr) auto auto; align-items: center; gap: 13px; padding: 13px; border: 1px solid var(--line); border-radius: 12px; }
+.admin-card-main strong, .admin-card-main small, .admin-compact-card strong, .admin-compact-card small { display: block; }
+.admin-card-main strong, .admin-compact-card strong { font-size: 10px; }
+.admin-card-main small, .admin-compact-card small { margin-top: 4px; color: var(--muted); font-size: 9px; overflow-wrap: anywhere; }
+.admin-actions { display: flex; gap: 6px; }
+.admin-actions button:last-child { color: var(--danger); }
+.admin-two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin: 18px 0; }
+.admin-two-column .panel { margin: 0; }
+.admin-compact-card { display: flex; min-height: 58px; align-items: center; justify-content: space-between; gap: 12px; padding: 11px 13px; border: 1px solid var(--line); border-radius: 11px; }
+.status-active, .status-verified, .status-hunter { color: var(--mint-dark); background: var(--mint-soft); }
+.status-suspended, .status-rejected, .status-closed { color: var(--danger); background: #fff0f0; }
+.status-pending, .status-reviewer { color: #b3702c; background: #fff4e7; }
+.admin-auth-panel { background: radial-gradient(circle at 15% 75%, rgba(101,216,178,.18), transparent 34%), linear-gradient(145deg,#0b272b,#153f42); }
+
+html[data-theme="dark"] .admin-table th { background: #0e1b1e; }
+html[data-theme="dark"] .admin-table tbody tr:hover { background: rgba(101,216,178,.065); }
+html[data-theme="dark"] .admin-action, html[data-theme="dark"] .admin-actions button { color: var(--ink); background: #122124; }
+html[data-theme="dark"] .admin-action:hover, html[data-theme="dark"] .admin-actions button:hover { color: var(--navy); background: var(--mint); }
+html[data-theme="dark"] .status-suspended, html[data-theme="dark"] .status-rejected, html[data-theme="dark"] .status-closed { color: #f0a3a5; background: #3a1e21; }
+html[data-theme="dark"] .status-pending, html[data-theme="dark"] .status-reviewer { color: #efb875; background: #3b2a18; }
+
+@media (max-width: 1120px) {
+  .admin-metrics { grid-template-columns: repeat(3,minmax(0,1fr)); }
+  .admin-person-card { grid-template-columns: 40px 1fr auto; }
+  .admin-person-card .admin-actions { grid-column: 2 / -1; }
+}
+
+@media (max-width: 780px) {
+  .dashboard-sidebar { position: sticky; z-index: 40; top: 0; display: flex; height: auto; min-height: 66px; align-items: center; flex-direction: row; gap: 12px; padding: 10px 68px 10px 14px; overflow: hidden; }
+  .dashboard-sidebar .brand { flex: 0 0 auto; }
+  .dashboard-sidebar .brand > span:last-child { display: none; }
+  .dashboard-sidebar nav { display: flex; min-width: 0; align-items: center; gap: 4px; margin: 0; overflow-x: auto; scrollbar-width: none; }
+  .dashboard-sidebar nav::-webkit-scrollbar { display: none; }
+  .dashboard-sidebar nav p, .dashboard-sidebar nav a span { display: none; }
+  .dashboard-sidebar nav a { flex: 0 0 auto; margin: 0; padding: 9px 10px; white-space: nowrap; }
+  .dashboard-sidebar nav a.active { box-shadow: inset 0 -3px var(--mint); }
+  .dashboard-topbar { position: static; }
+  .admin-section { scroll-margin-top: 78px; }
+  .admin-notice { top: 76px; }
+  .admin-two-column { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  .panel { padding: 17px; border-radius: 14px; }
+  .admin-metrics { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .admin-metrics .stat-card:last-child { grid-column: 1 / -1; }
+  .admin-person-card { grid-template-columns: 36px minmax(0,1fr); align-items: start; }
+  .admin-person-card > .status { grid-column: 2; }
+  .admin-person-card .admin-actions { grid-column: 1 / -1; }
+  .admin-actions button { flex: 1; }
+  .panel-heading { align-items: flex-start; }
+  .admin-count { display: none; }
+  .dashboard-topbar h2 { font-size: 18px; }
+  .page-heading h1 { font-size: 28px; }
+}
