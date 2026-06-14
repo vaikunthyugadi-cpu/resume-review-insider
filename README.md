@@ -22,7 +22,9 @@ Production Next.js marketplace connecting job seekers (Hunters) with verified co
 
 ## Deployment
 
-Connect the repository to Vercel and add:
+Connected to Vercel for automatic production deployments from the `main` branch.
+
+Required variables:
 
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
