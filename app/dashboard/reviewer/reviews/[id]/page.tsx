@@ -16,9 +16,9 @@ export default async function ReviewerReviewPage({ params }: { params: Promise<{
   const request = data as unknown as {
     id: string; status: string; target_role: string; resume_id: string; hunter_id: string; claimed_by: string | null; created_at: string;
     resumes: { file_name: string; file_path: string } | null;
-    review_feedback: { strengths: string; improvements: string; recommendations: string; overall_summary: string }[] | null;
+    review_feedback: { strengths: string; improvements: string; recommendations: string; overall_summary: string }[] | { strengths: string; improvements: string; recommendations: string; overall_summary: string } | null;
   };
-  const feedback = request.review_feedback?.[0];
+  const feedback = Array.isArray(request.review_feedback) ? request.review_feedback[0] : request.review_feedback;
   const { data: hunter } = await supabase.from("users_profile").select("full_name").eq("id", request.hunter_id).single();
   let resumeUrl = "";
   if (request.claimed_by === user.id && request.resumes) {
