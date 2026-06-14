@@ -9,6 +9,15 @@ export type Profile = {
   company_name: string | null;
   work_email_verified: boolean;
   verification_status?: string;
+  account_status?: string;
+  is_admin?: boolean;
+};
+
+export type AdminProfile = {
+  id: string;
+  full_name: string;
+  email: string;
+  is_admin: true;
 };
 
 export type Company = {
