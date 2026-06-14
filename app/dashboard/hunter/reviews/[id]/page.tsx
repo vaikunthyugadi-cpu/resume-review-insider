@@ -20,11 +20,11 @@ export default async function HunterReviewDetail({
   const request = data as unknown as {
     id: string; status: string; target_role: string; resume_id: string; claimed_by: string | null; created_at: string;
     companies: { name: string } | null; resumes: { file_name: string } | null;
-    review_feedback: { strengths: string; improvements: string; recommendations: string; overall_summary: string }[] | null;
-    ratings: { stars: number; comment: string }[] | null;
+    review_feedback: { strengths: string; improvements: string; recommendations: string; overall_summary: string }[] | { strengths: string; improvements: string; recommendations: string; overall_summary: string } | null;
+    ratings: { stars: number; comment: string }[] | { stars: number; comment: string } | null;
   };
-  const feedback = request.review_feedback?.[0];
-  const rating = request.ratings?.[0];
+  const feedback = Array.isArray(request.review_feedback) ? request.review_feedback[0] : request.review_feedback;
+  const rating = Array.isArray(request.ratings) ? request.ratings[0] : request.ratings;
   const { data: reviewer } = request.claimed_by
     ? await supabase.from("users_profile").select("full_name").eq("id", request.claimed_by).single()
     : { data: null };
