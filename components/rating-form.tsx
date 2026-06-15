@@ -19,6 +19,7 @@ export function RatingForm({ requestId, reviewerId }: { requestId: string; revie
     if (!user) return router.push("/login");
     const comment = String(form.get("comment"));
     const reportReason = String(form.get("reportReason") ?? "");
+    const reportCategory = String(form.get("reportCategory") ?? "other");
     const { error } = await supabase.rpc("submit_rating", {
       selected_request: requestId,
       selected_stars: rating,
@@ -34,7 +35,7 @@ export function RatingForm({ requestId, reviewerId }: { requestId: string; revie
         request_id: requestId,
         hunter_id: user.id,
         reviewer_id: reviewerId,
-        category: "quality",
+        category: reportCategory,
         details: reportReason
       });
       if (reportError) {
@@ -49,7 +50,7 @@ export function RatingForm({ requestId, reviewerId }: { requestId: string; revie
   return <form className="rating-form" onSubmit={submit}>
     <div className="star-picker">{[1,2,3,4,5].map((value) => <button type="button" onClick={() => setRating(value)} className={value <= rating ? "active" : ""} key={value}>★</button>)}</div>
     <label>Comment<textarea name="comment" required placeholder="What was most helpful?" /></label>
-    <label>Report an issue (optional)<textarea name="reportReason" placeholder="Describe low-effort, offensive, or misleading feedback." /></label>
+    <div className="field-grid"><label>Issue type<select name="reportCategory" defaultValue="low_effort"><option value="low_effort">Low-effort feedback</option><option value="misleading">Misleading advice</option><option value="offensive">Offensive content</option><option value="late">Late delivery</option><option value="other">Other</option></select></label><label>Report an issue (optional)<textarea name="reportReason" placeholder="Describe the issue for the admin team." /></label></div>
     {message && <p className="form-error">{message}</p>}
     <button className="button button-primary button-block" disabled={loading}>{loading ? "Saving..." : "Submit rating"}</button>
   </form>;
