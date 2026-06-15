@@ -40,6 +40,16 @@ export function SignupForm({ initialRole }: { initialRole: UserRole }) {
       return;
     }
 
+    if (role === "reviewer" && company) {
+      const emailDomain = email.split("@")[1]?.toLowerCase() ?? "";
+      const companyToken = company.name.toLowerCase().split(/\s+/)[0].replace(/[^a-z0-9]/g, "");
+      if (!companyToken || !emailDomain.includes(companyToken)) {
+        setMessage(`Use a ${company.name} work email address to register as a Reviewer.`);
+        setLoading(false);
+        return;
+      }
+    }
+
     const supabase = createClient();
     const { data, error } = await supabase.auth.signUp({
       email,
