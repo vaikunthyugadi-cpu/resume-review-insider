@@ -1,65 +1,24 @@
 "use client";
-
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-
-type Metrics = { users?: number; hunters?: number; reviewers?: number; pending_reviewers?: number; open_requests?: number; completed_requests?: number; open_complaints?: number };
-type UserRow = { id: string; full_name?: string; email?: string; user_type?: string; account_status?: string; request_count?: number; created_at?: string };
-type ReviewerRow = { user_id: string; full_name?: string; email?: string; company_name?: string; job_title?: string; verification_status?: string };
-type CompanyRow = { id: string; name?: string; is_active?: boolean; active?: boolean; verified_reviewer_count?: number };
-type RequestRow = { id: string; target_role?: string; status?: string; company_name?: string; hunter_name?: string; reviewer_name?: string; created_at?: string };
-type ComplaintRow = { id: string; category?: string; details?: string; status?: string; created_at?: string };
-export type AdminDashboardData = { metrics?: Metrics; users?: UserRow[]; reviewers?: ReviewerRow[]; companies?: CompanyRow[]; requests?: RequestRow[]; complaints?: ComplaintRow[] };
-
-function date(value?: string) { return value ? new Intl.DateTimeFormat("en", { dateStyle: "medium" }).format(new Date(value)) : "—"; }
-function Badge({ value = "unknown" }: { value?: string }) { return <span className={`status status-${value}`}>{value.replaceAll("_", " ")}</span>; }
-
-export function AdminConsole({ initialData }: { initialData: AdminDashboardData }) {
-  const router = useRouter();
-  const [busy, setBusy] = useState("");
-  const [notice, setNotice] = useState("");
-  const data = initialData || {};
-
-  async function run(name: string, args: Record<string, string | boolean>, key: string) {
-    setBusy(key); setNotice("");
-    const { error } = await createClient().rpc(name, args);
-    if (error) setNotice(error.message);
-    else { setNotice("Change saved successfully."); router.refresh(); }
-    setBusy("");
-  }
-
-  const metrics = [
-    ["People", data.metrics?.users ?? 0, "Active platform accounts"],
-    ["Hunters", data.metrics?.hunters ?? 0, "Job seekers using reviews"],
-    ["Reviewers", data.metrics?.reviewers ?? 0, `${data.metrics?.pending_reviewers ?? 0} awaiting verification`],
-    ["Open requests", data.metrics?.open_requests ?? 0, `${data.metrics?.completed_requests ?? 0} completed`],
-    ["Support", data.metrics?.open_complaints ?? 0, "Open complaints"]
-  ];
-
-  return <>
-    {notice && <p className={notice.includes("successfully") ? "form-success admin-notice" : "form-error admin-notice"} role="status">{notice}</p>}
-    <section className="admin-metrics" aria-label="Platform overview">
-      {metrics.map(([label, value, note]) => <article className="stat-card" key={String(label)}><span>{label}</span><strong>{value}</strong><small>{note}</small></article>)}
-    </section>
-
-    <section className="panel admin-section" id="people">
-      <div className="panel-heading"><div><p className="eyebrow">Account management</p><h2>Hunters and reviewers</h2><p>Suspend access immediately or restore a resolved account.</p></div><span className="admin-count">{data.users?.length ?? 0} accounts</span></div>
-      <div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>Person</th><th>Role</th><th>Status</th><th>Activity</th><th>Joined</th><th>Action</th></tr></thead><tbody>
-        {(data.users ?? []).map(user => <tr key={user.id}><td><strong>{user.full_name || "Unnamed user"}</strong><small>{user.email}</small></td><td><Badge value={user.user_type} /></td><td><Badge value={user.account_status} /></td><td>{user.request_count ?? 0} requests</td><td>{date(user.created_at)}</td><td><button className="admin-action" disabled={busy === user.id} onClick={() => run("admin_set_account_status", { selected_user: user.id, new_status: user.account_status === "active" ? "suspended" : "active" }, user.id)}>{busy === user.id ? "Saving..." : user.account_status === "active" ? "Suspend" : "Activate"}</button></td></tr>)}
-      </tbody></table></div>
-    </section>
-
-    <section className="panel admin-section" id="reviewers">
-      <div className="panel-heading"><div><p className="eyebrow">Trust and quality</p><h2>Reviewer verification</h2><p>Approve verified employees or reject profiles that do not meet requirements.</p></div></div>
-      <div className="admin-card-list">{(data.reviewers ?? []).map(reviewer => <article className="admin-person-card" key={reviewer.user_id}><div className="avatar">{(reviewer.full_name || "R").slice(0,2).toUpperCase()}</div><div className="admin-card-main"><strong>{reviewer.full_name || "Reviewer"}</strong><small>{reviewer.email} · {reviewer.job_title || "Role not supplied"}</small><small>{reviewer.company_name || "Company not supplied"}</small></div><Badge value={reviewer.verification_status} /><div className="admin-actions"><button disabled={busy === reviewer.user_id} onClick={() => run("admin_set_reviewer_verification", { selected_user: reviewer.user_id, new_status: "verified" }, reviewer.user_id)}>Verify</button><button disabled={busy === reviewer.user_id} onClick={() => run("admin_set_reviewer_verification", { selected_user: reviewer.user_id, new_status: "rejected" }, reviewer.user_id)}>Reject</button></div></article>)}</div>
-    </section>
-
-    <section className="admin-two-column">
-      <div className="panel admin-section" id="companies"><div className="panel-heading"><div><p className="eyebrow">Marketplace</p><h2>Companies</h2></div></div><div className="admin-card-list">{(data.companies ?? []).map(company => { const active = company.is_active ?? company.active ?? true; return <article className="admin-compact-card" key={company.id}><div><strong>{company.name || "Company"}</strong><small>{company.verified_reviewer_count ?? 0} verified reviewers</small></div><button className="admin-action" disabled={busy === company.id} onClick={() => run("admin_set_company_status", { selected_company: company.id, active: !active }, company.id)}>{active ? "Pause" : "Enable"}</button></article>; })}</div></div>
-      <div className="panel admin-section" id="support"><div className="panel-heading"><div><p className="eyebrow">Support queue</p><h2>Complaints</h2></div></div><div className="admin-card-list">{(data.complaints ?? []).length ? (data.complaints ?? []).map(item => <article className="admin-compact-card" key={item.id}><div><strong>{item.category || "Platform complaint"}</strong><small>{item.details || "User report"} · {date(item.created_at)}</small></div>{item.status === "resolved" ? <Badge value="completed" /> : <button className="admin-action" disabled={busy === item.id} onClick={() => run("admin_resolve_complaint", { selected_complaint: item.id }, item.id)}>Resolve</button>}</article>) : <p className="empty-inline">No open complaints.</p>}</div></div>
-    </section>
-
-    <section className="panel admin-section" id="requests"><div className="panel-heading"><div><p className="eyebrow">Review operations</p><h2>Recent resume requests</h2><p>Monitor ownership and recover requests that need intervention.</p></div></div><div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>Request</th><th>Hunter</th><th>Reviewer</th><th>Status</th><th>Created</th><th>Action</th></tr></thead><tbody>{(data.requests ?? []).map(item => <tr key={item.id}><td><strong>{item.target_role || "Resume review"}</strong><small>{item.company_name || "General"}</small></td><td>{item.hunter_name || "—"}</td><td>{item.reviewer_name || "Unclaimed"}</td><td><Badge value={item.status} /></td><td>{date(item.created_at)}</td><td>{item.status !== "completed" && <button className="admin-action" disabled={busy === item.id} onClick={() => run("admin_set_request_status", { selected_request: item.id, new_status: item.status === "cancelled" ? "open" : "cancelled" }, item.id)}>{item.status === "cancelled" ? "Reopen" : "Cancel"}</button>}</td></tr>)}</tbody></table></div></section>
-  </>;
-}
+type Metrics={users?:number;hunters?:number;reviewers?:number;pending_reviewers?:number;open_requests?:number;completed_requests?:number;open_complaints?:number};
+type UserRow={id:string;full_name?:string;email?:string;user_type?:string;account_status?:string;request_count?:number;created_at?:string};
+type ReviewerRow={user_id:string;full_name?:string;email?:string;company_name?:string;job_title?:string;verification_status?:string};
+type CompanyRow={id:string;name?:string;is_active?:boolean;active?:boolean;verified_reviewer_count?:number};
+type RequestRow={id:string;target_role?:string;status?:string;company_name?:string;hunter_name?:string;reviewer_name?:string;created_at?:string};
+type ComplaintRow={id:string;category?:string;details?:string;status?:string;created_at?:string};
+type PackageRow={id:string;name:string;review_count:number;price_pence:number;is_active:boolean;sort_order:number};
+export type AdminDashboardData={metrics?:Metrics;users?:UserRow[];reviewers?:ReviewerRow[];companies?:CompanyRow[];requests?:RequestRow[];complaints?:ComplaintRow[];packages?:PackageRow[]};
+function date(v?:string){return v?new Intl.DateTimeFormat("en",{dateStyle:"medium"}).format(new Date(v)):"—"} function Badge({value="unknown"}:{value?:string}){return <span className={`status status-${value}`}>{value.replaceAll("_"," ")}</span>}
+export function AdminConsole({initialData}:{initialData:AdminDashboardData}){const router=useRouter();const[busy,setBusy]=useState("");const[notice,setNotice]=useState("");const data=initialData||{};
+ async function run(name:string,args:Record<string,string|boolean|number>,id:string){setBusy(id);setNotice("");const{error}=await createClient().rpc(name,args);if(error)setNotice(error.message);else{setNotice("Change saved successfully.");router.refresh()}setBusy("")}
+ async function updatePackage(event:React.FormEvent<HTMLFormElement>,item:PackageRow){event.preventDefault();const f=new FormData(event.currentTarget);await run("admin_update_package",{p_package_id:item.id,p_review_count:Number(f.get("reviews")),p_price_pence:Math.round(Number(f.get("price"))*100),p_is_active:f.get("active")==="on"},item.id)}
+ const metrics=[["People",data.metrics?.users??0,"Managed accounts"],["Hunters",data.metrics?.hunters??0,"Job seekers"],["Reviewers",data.metrics?.reviewers??0,`${data.metrics?.pending_reviewers??0} awaiting verification`],["Open requests",data.metrics?.open_requests??0,`${data.metrics?.completed_requests??0} completed`],["Support",data.metrics?.open_complaints??0,"Open complaints"]];
+ return <>{notice&&<p className={notice.includes("successfully")?"form-success admin-notice":"form-error admin-notice"}>{notice}</p>}<section className="admin-metrics">{metrics.map(([l,v,n])=><article className="stat-card" key={String(l)}><span>{l}</span><strong>{v}</strong><small>{n}</small></article>)}</section>
+ <section className="panel admin-section" id="people"><Heading eyebrow="Account management" title="Hunters and reviewers" copy="Suspend access immediately or restore a resolved account."/><div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>Person</th><th>Role</th><th>Status</th><th>Activity</th><th>Joined</th><th>Action</th></tr></thead><tbody>{(data.users??[]).map(u=><tr key={u.id}><td><strong>{u.full_name||"Unnamed user"}</strong><small>{u.email}</small></td><td><Badge value={u.user_type}/></td><td><Badge value={u.account_status}/></td><td>{u.request_count??0} requests</td><td>{date(u.created_at)}</td><td><button className="admin-action" disabled={busy===u.id} onClick={()=>run("admin_set_account_status",{selected_user:u.id,new_status:u.account_status==="active"?"suspended":"active"},u.id)}>{u.account_status==="active"?"Suspend":"Activate"}</button></td></tr>)}</tbody></table></div></section>
+ <section className="panel admin-section" id="reviewers"><Heading eyebrow="Trust and quality" title="Reviewer verification" copy="Approve work-email accounts or reject profiles that do not meet requirements."/><div className="admin-card-list">{(data.reviewers??[]).map(r=><article className="admin-person-card" key={r.user_id}><div className="avatar">{(r.full_name||"R").slice(0,2).toUpperCase()}</div><div className="admin-card-main"><strong>{r.full_name||"Reviewer"}</strong><small>{r.email} · {r.job_title||"Role not supplied"}</small><small>{r.company_name||"Company not supplied"}</small></div><Badge value={r.verification_status}/><div className="admin-actions"><button onClick={()=>run("admin_set_reviewer_verification",{selected_user:r.user_id,new_status:"verified"},r.user_id)}>Verify</button><button onClick={()=>run("admin_set_reviewer_verification",{selected_user:r.user_id,new_status:"rejected"},r.user_id)}>Reject</button></div></article>)}</div></section>
+ <section className="panel admin-section" id="pricing"><Heading eyebrow="Commercial settings" title="Review packages" copy="Pricing and credits update immediately for new Hunter purchases."/><div className="pricing-admin-grid">{(data.packages??[]).map(p=><form className="pricing-admin-card" key={p.id} onSubmit={e=>updatePackage(e,p)}><div><strong>{p.name}</strong><small>Package configuration</small></div><label>Price (£)<input name="price" type="number" min="0.5" step="0.01" defaultValue={(p.price_pence/100).toFixed(2)}/></label><label>Review credits<input name="reviews" type="number" min="1" max="100" defaultValue={p.review_count}/></label><label className="toggle-label"><input name="active" type="checkbox" defaultChecked={p.is_active}/> Available to Hunters</label><button className="button button-primary" disabled={busy===p.id}>{busy===p.id?"Saving...":"Save package"}</button></form>)}</div></section>
+ <section className="admin-two-column"><div className="panel admin-section" id="companies"><Heading eyebrow="Marketplace" title="Companies"/><div className="admin-card-list">{(data.companies??[]).map(c=>{const active=c.is_active??c.active??true;return <article className="admin-compact-card" key={c.id}><div><strong>{c.name||"Company"}</strong><small>{c.verified_reviewer_count??0} verified reviewers</small></div><button className="admin-action" onClick={()=>run("admin_set_company_status",{selected_company:c.id,active:!active},c.id)}>{active?"Pause":"Enable"}</button></article>})}</div></div><div className="panel admin-section" id="support"><Heading eyebrow="Support queue" title="Complaints"/><div className="admin-card-list">{(data.complaints??[]).length?(data.complaints??[]).map(x=><article className="admin-compact-card" key={x.id}><div><strong>{x.category||"Platform complaint"}</strong><small>{x.details||"User report"} · {date(x.created_at)}</small></div>{x.status==="resolved"?<Badge value="completed"/>:<button className="admin-action" onClick={()=>run("admin_resolve_complaint",{selected_complaint:x.id},x.id)}>Resolve</button>}</article>):<p className="empty-inline">No open complaints.</p>}</div></div></section>
+ <section className="panel admin-section" id="requests"><Heading eyebrow="Review operations" title="Recent resume requests" copy="Monitor ownership and recover requests that need intervention."/><div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>Request</th><th>Hunter</th><th>Reviewer</th><th>Status</th><th>Created</th><th>Action</th></tr></thead><tbody>{(data.requests??[]).map(x=><tr key={x.id}><td><strong>{x.target_role||"Resume review"}</strong><small>{x.company_name||"General"}</small></td><td>{x.hunter_name||"—"}</td><td>{x.reviewer_name||"Unclaimed"}</td><td><Badge value={x.status}/></td><td>{date(x.created_at)}</td><td>{x.status!=="completed"&&<button className="admin-action" onClick={()=>run("admin_set_request_status",{selected_request:x.id,new_status:x.status==="cancelled"?"open":"cancelled"},x.id)}>{x.status==="cancelled"?"Reopen":"Cancel"}</button>}</td></tr>)}</tbody></table></div></section></>}
+function Heading({eyebrow,title,copy}:{eyebrow:string;title:string;copy?:string}){return <div className="panel-heading"><div><p className="eyebrow">{eyebrow}</p><h2>{title}</h2>{copy&&<p>{copy}</p>}</div></div>}
