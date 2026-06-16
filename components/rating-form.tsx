@@ -6,7 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 
 export function RatingForm({ requestId, reviewerId }: { requestId: string; reviewerId: string | null }) {
   const router = useRouter();
-  const [rating, setRating] = useState(5);
+  const [rating, setRating] = useState(8);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -39,7 +39,7 @@ export function RatingForm({ requestId, reviewerId }: { requestId: string; revie
         details: reportReason
       });
       if (reportError) {
-        setMessage(`Rating saved, but the report could not be submitted: ${reportError.message}`);
+        setMessage(`Score saved, but the report could not be submitted: ${reportError.message}`);
         setLoading(false);
         return;
       }
@@ -48,10 +48,11 @@ export function RatingForm({ requestId, reviewerId }: { requestId: string; revie
   }
 
   return <form className="rating-form" onSubmit={submit}>
-    <div className="star-picker">{[1,2,3,4,5].map((value) => <button type="button" onClick={() => setRating(value)} className={value <= rating ? "active" : ""} key={value}>★</button>)}</div>
-    <label>Comment<textarea name="comment" required placeholder="What was most helpful?" /></label>
+    <div className="score-picker" aria-label="Score this review out of 10">{[1,2,3,4,5,6,7,8,9,10].map((value) => <button type="button" onClick={() => setRating(value)} className={value <= rating ? "active" : ""} key={value} aria-pressed={value === rating}>{value}</button>)}</div>
+    <p className="payment-note"><span>£</span><span><strong>Reviewer earnings unlock only for scores above 7/10.</strong> Your score controls whether £1.00 reflects in the Reviewer dashboard.</span></p>
+    <label>Comment<textarea name="comment" required placeholder="What was most helpful about the review?" /></label>
     <div className="field-grid"><label>Issue type<select name="reportCategory" defaultValue="low_effort"><option value="low_effort">Low-effort feedback</option><option value="misleading">Misleading advice</option><option value="offensive">Offensive content</option><option value="late">Late delivery</option><option value="other">Other</option></select></label><label>Report an issue (optional)<textarea name="reportReason" placeholder="Describe the issue for the admin team." /></label></div>
     {message && <p className="form-error">{message}</p>}
-    <button className="button button-primary button-block" disabled={loading}>{loading ? "Saving..." : "Submit rating"}</button>
+    <button className="button button-primary button-block" disabled={loading}>{loading ? "Saving..." : "Submit score"}</button>
   </form>;
 }
