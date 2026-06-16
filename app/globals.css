@@ -207,6 +207,10 @@ legend { margin-bottom: 10px; }
 .star-picker { display: flex; }
 .star-picker button { padding: 2px; color: #c8d1cf; background: transparent; border: 0; font-size: 25px; }
 .star-picker button.active { color: #edad52; }
+.score-picker { display: grid; grid-template-columns: repeat(10,minmax(0,1fr)); gap: 6px; }
+.score-picker button { min-height: 36px; color: #59616c; background: #f5f7f9; border: 1px solid #dfe3e8; border-radius: 8px; font-size: 12px; font-weight: 850; }
+.score-picker button.active { color: white; background: #0a66c2; border-color: #0a66c2; }
+.existing-rating small { display: block; margin-top: 8px; color: var(--muted); font-size: 10px; line-height: 1.45; }
 .queue-list { display: grid; gap: 10px; }
 .queue-row { display: grid; grid-template-columns: 40px 1fr auto auto; align-items: center; gap: 13px; padding: 14px; border: 1px solid var(--line); border-radius: 13px; }
 .queue-row strong, .queue-row small { display: block; }
@@ -417,6 +421,8 @@ html[data-theme="dark"] .admin-action, html[data-theme="dark"] .admin-actions bu
 html[data-theme="dark"] .admin-action:hover, html[data-theme="dark"] .admin-actions button:hover { color: var(--navy); background: var(--mint); }
 html[data-theme="dark"] .status-suspended, html[data-theme="dark"] .status-rejected, html[data-theme="dark"] .status-closed { color: #f0a3a5; background: #3a1e21; }
 html[data-theme="dark"] .status-pending, html[data-theme="dark"] .status-reviewer { color: #efb875; background: #3b2a18; }
+html[data-theme="dark"] .score-picker button { color: #b7bdc5; background: #171b20; border-color: #343a42; }
+html[data-theme="dark"] .score-picker button.active { color: white; background: #0a66c2; border-color: #0a66c2; }
 
 @media (max-width: 1120px) {
   .admin-metrics { grid-template-columns: repeat(3,minmax(0,1fr)); }
@@ -790,6 +796,7 @@ html[data-theme="dark"] .notification-heading > span { color: #67aef2; backgroun
   .stat-grid { grid-template-columns: 1fr; }
   .stat-card { min-height: auto; }
   .field-grid, .package-picker { grid-template-columns: minmax(0,1fr); }
+  .score-picker { grid-template-columns: repeat(5,minmax(0,1fr)); }
   .panel-heading, .notification-heading { flex-direction: column; }
   .notification-heading > span { align-self: flex-start; }
   .data-row, .earning-row { grid-template-columns: 34px minmax(0,1fr); }

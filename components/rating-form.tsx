@@ -49,7 +49,7 @@ export function RatingForm({ requestId, reviewerId }: { requestId: string; revie
 
   return <form className="rating-form" onSubmit={submit}>
     <div className="score-picker" aria-label="Score this review out of 10">{[1,2,3,4,5,6,7,8,9,10].map((value) => <button type="button" onClick={() => setRating(value)} className={value <= rating ? "active" : ""} key={value} aria-pressed={value === rating}>{value}</button>)}</div>
-    <p className="payment-note"><span>£</span><span><strong>Reviewer earnings unlock only for scores above 7/10.</strong> Your score controls whether £1.00 reflects in the Reviewer dashboard.</span></p>
+    <div className="payment-note"><span>£</span><p><strong>Reviewer earnings unlock only for scores above 7/10.</strong> Your score controls whether £1.00 reflects in the Reviewer dashboard.</p></div>
     <label>Comment<textarea name="comment" required placeholder="What was most helpful about the review?" /></label>
     <div className="field-grid"><label>Issue type<select name="reportCategory" defaultValue="low_effort"><option value="low_effort">Low-effort feedback</option><option value="misleading">Misleading advice</option><option value="offensive">Offensive content</option><option value="late">Late delivery</option><option value="other">Other</option></select></label><label>Report an issue (optional)<textarea name="reportReason" placeholder="Describe the issue for the admin team." /></label></div>
     {message && <p className="form-error">{message}</p>}
