@@ -43,7 +43,7 @@ export default async function HunterReviewDetail({
           </section>
           <aside className="panel">
             <h2>Rate this review</h2>
-            {rating ? <div className="existing-rating"><strong>{"★".repeat(rating.stars)}</strong><p>{rating.comment}</p></div> : <RatingForm requestId={request.id} reviewerId={request.claimed_by} />}
+            {rating ? <div className="existing-rating"><strong>{rating.stars}/10</strong><p>{rating.comment}</p><small>{rating.stars > 7 ? "Reviewer earning released." : "Reviewer earning was not released because the score was not above 7/10."}</small></div> : <RatingForm requestId={request.id} reviewerId={request.claimed_by} />}
           </aside>
         </div>
       ) : (
