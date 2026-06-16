@@ -620,6 +620,153 @@ label input:focus, label select:focus, label textarea:focus { border-color: #0a6
 .theme-toggle { min-height: 36px; color: #414751; background: rgba(255,255,255,.95); border-color: #d9dee5; box-shadow: 0 2px 8px rgba(31,35,40,.1); }
 .theme-toggle-icon { color: white; background: #0a66c2; }
 
+/* Admin console polish */
+.admin-content .panel {
+  overflow: hidden;
+}
+.admin-section .panel-heading {
+  align-items: flex-start;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e7ebf0;
+}
+.admin-section .panel-heading .eyebrow {
+  margin-bottom: 5px;
+  color: #536174;
+}
+.admin-section .panel-heading h2 {
+  letter-spacing: -.02em;
+}
+.admin-metrics .stat-card {
+  border-color: #dbe4ee;
+  border-left: 3px solid #0a66c2;
+}
+.admin-metrics .stat-card::after {
+  right: -22px;
+  bottom: -32px;
+  background: linear-gradient(135deg,#eaf3fc,#f3f8ff);
+}
+.admin-person-card,
+.admin-compact-card {
+  border-color: #dfe6ee;
+  box-shadow: 0 4px 14px rgba(31,35,40,.04);
+}
+.admin-person-card:hover,
+.admin-compact-card:hover {
+  border-color: #b8d5f0;
+  background: #f8fbff;
+}
+.admin-table-wrap {
+  border-color: #dde4ec;
+}
+.pricing-admin-grid {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 16px;
+  margin-top: 18px;
+}
+.pricing-admin-card {
+  display: grid;
+  min-width: 0;
+  gap: 14px;
+  padding: 18px;
+  background: linear-gradient(180deg,#fff 0%,#f8fbff 100%);
+  border: 1px solid #dce5ef;
+  border-radius: 13px;
+  box-shadow: 0 8px 24px rgba(31,35,40,.06);
+}
+.pricing-admin-card > div:first-child {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e8edf3;
+}
+.pricing-admin-card > div:first-child::after {
+  flex: 0 0 auto;
+  padding: 5px 9px;
+  color: #087855;
+  background: #e8f7f1;
+  border-radius: 999px;
+  content: "Live";
+  font-size: 9px;
+  font-weight: 850;
+  letter-spacing: .02em;
+}
+.pricing-admin-card strong {
+  display: block;
+  color: #20242a;
+  font-size: 17px;
+  line-height: 1.2;
+}
+.pricing-admin-card small {
+  display: block;
+  margin-top: 4px;
+  color: #737b86;
+  font-size: 11px;
+}
+.pricing-admin-card label {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+  color: #343a43;
+  font-size: 11px;
+  font-weight: 800;
+}
+.pricing-admin-card input[type="number"] {
+  width: 100%;
+  min-height: 44px;
+  margin: 0;
+  padding: 11px 12px;
+  color: #171a1f;
+  background: #fff;
+  border: 1px solid #bdc8d4;
+  border-radius: 9px;
+  font-size: 14px;
+  font-weight: 800;
+}
+.pricing-admin-card input[type="number"]:focus {
+  border-color: #0a66c2;
+  box-shadow: 0 0 0 3px rgba(10,102,194,.12);
+}
+.pricing-admin-card .toggle-label {
+  display: flex;
+  min-height: 46px;
+  flex-direction: row-reverse;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px;
+  color: #17496f;
+  background: #eef6ff;
+  border: 1px solid #cfe3f7;
+  border-radius: 10px;
+  line-height: 1.25;
+}
+.pricing-admin-card .toggle-label input[type="checkbox"] {
+  appearance: auto;
+  flex: 0 0 auto;
+  width: 20px;
+  min-height: 20px;
+  height: 20px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  box-shadow: none;
+  accent-color: #0a66c2;
+}
+.pricing-admin-card .button {
+  width: 100%;
+  min-height: 44px;
+  border-radius: 999px;
+  color: #fff;
+  background: #0a66c2;
+  box-shadow: 0 8px 18px rgba(10,102,194,.18);
+}
+.pricing-admin-card .button:hover {
+  background: #084f96;
+}
+
 /* Professional dark variant */
 html[data-theme="dark"] { --ink:#e7e9ec; --muted:#aab0b8; --cream:#15191e; --white:#1d2228; --line:#343a42; --mint-soft:#17324c; }
 html[data-theme="dark"] .marketing-page, html[data-theme="dark"] .portal-home { background:#15191e; }
@@ -643,6 +790,18 @@ html[data-theme="dark"] .stat-card, html[data-theme="dark"] .panel, html[data-th
 html[data-theme="dark"] .data-row:hover { background:#202a35; }
 html[data-theme="dark"] .admin-table th { background:#242a31; }
 html[data-theme="dark"] label input, html[data-theme="dark"] label select, html[data-theme="dark"] label textarea { background:#171b20; border-color:#48515b; }
+html[data-theme="dark"] .admin-section .panel-heading { border-color:#343a42; }
+html[data-theme="dark"] .admin-person-card,
+html[data-theme="dark"] .admin-compact-card,
+html[data-theme="dark"] .admin-table-wrap { border-color:#343a42; }
+html[data-theme="dark"] .admin-person-card:hover,
+html[data-theme="dark"] .admin-compact-card:hover { background:#202a35; border-color:#48515b; }
+html[data-theme="dark"] .pricing-admin-card { background:linear-gradient(180deg,#1d2228 0%,#171b20 100%); border-color:#343a42; box-shadow:none; }
+html[data-theme="dark"] .pricing-admin-card > div:first-child { border-color:#343a42; }
+html[data-theme="dark"] .pricing-admin-card strong { color:#f0f2f4; }
+html[data-theme="dark"] .pricing-admin-card small { color:#aab0b8; }
+html[data-theme="dark"] .pricing-admin-card input[type="number"] { color:#f0f2f4; background:#15191e; border-color:#48515b; }
+html[data-theme="dark"] .pricing-admin-card .toggle-label { color:#dcecff; background:#17324c; border-color:#31516d; }
 
 @media (max-width: 980px) {
   .portal-benefits { grid-template-columns: repeat(2,1fr); }
@@ -650,6 +809,7 @@ html[data-theme="dark"] label input, html[data-theme="dark"] label select, html[
   .portal-search { grid-template-columns: 1fr 1fr; }
   .portal-search-button { grid-column: 1 / -1; width: 100%; }
   .admin-metrics { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .pricing-admin-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
 }
 @media (max-width: 780px) {
   .portal-links .nav-link { display:none; }
@@ -662,6 +822,8 @@ html[data-theme="dark"] label input, html[data-theme="dark"] label select, html[
   .dashboard-sidebar nav a { color:#4c535d; }
   .dashboard-sidebar nav a:hover, .dashboard-sidebar nav a.active { color:#0a66c2; background:#eef6ff; }
   html[data-theme="dark"] .dashboard-sidebar { background:#1d2228; }
+  .pricing-admin-grid { grid-template-columns: minmax(0,1fr); gap: 12px; }
+  .pricing-admin-card { padding: 15px; }
 }
 @media (max-width: 600px) {
   .portal-nav .brand > span:last-child { display:none; }
