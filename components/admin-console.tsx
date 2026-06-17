@@ -81,18 +81,18 @@ export function AdminConsole({ initialData }: { initialData: AdminDashboardData 
   }
 
   const hunterMetrics = [
-    ["Hunters", hunters.length, "Total Hunter accounts"],
-    ["Active Hunters", activeHunters, "Can use the platform"],
-    ["Suspended", suspendedHunters, "Restricted Hunter accounts"],
-    ["Open requests", openRequests, "Waiting for reviewers"],
-    ["Completed", completedRequests, "Reviews delivered"]
+    ["Hunters", hunters.length, "Total"],
+    ["Active", activeHunters, "Live accounts"],
+    ["Suspended", suspendedHunters, "Blocked"],
+    ["Open", openRequests, "Waiting"],
+    ["Completed", completedRequests, "Done"]
   ];
   const reviewerMetrics = [
-    ["Reviewers", reviewerAccounts.length, "Total Reviewer accounts"],
-    ["Active Reviewers", activeReviewers, "Can access reviewer tools"],
-    ["Pending checks", pendingReviewers.length, "Need admin verification"],
-    ["Companies", (data.companies ?? []).length, "Reviewer company list"],
-    ["Assigned reviews", reviewerRequests.length, "Claimed or completed"]
+    ["Reviewers", reviewerAccounts.length, "Total"],
+    ["Active", activeReviewers, "Live accounts"],
+    ["Pending", pendingReviewers.length, "Verify"],
+    ["Companies", (data.companies ?? []).length, "Listed"],
+    ["Assigned", reviewerRequests.length, "Reviews"]
   ];
   const selectedMetrics = roleTab === "hunter" ? hunterMetrics : reviewerMetrics;
 
@@ -100,17 +100,16 @@ export function AdminConsole({ initialData }: { initialData: AdminDashboardData 
     {notice && <p className={notice.includes("successfully") ? "form-success admin-notice" : "form-error admin-notice"}>{notice}</p>}
     <section className="admin-role-hero">
       <div>
-        <p className="eyebrow">Choose admin workspace</p>
-        <h2>{roleTab === "hunter" ? "Hunter management page" : "Reviewer management page"}</h2>
-        <p>{roleTab === "hunter" ? "All dashboard data below is focused on Hunters, their accounts, purchases, and resume requests." : "All dashboard data below is focused on Reviewers, verification, companies, and assigned review work."}</p>
+        <p className="eyebrow">Workspace</p>
+        <h2>{roleTab === "hunter" ? "Hunters" : "Reviewers"}</h2>
       </div>
       <div className="admin-role-switch admin-role-switch-top" role="tablist" aria-label="Admin page switch">
         <button className={roleTab === "hunter" ? "active" : ""} type="button" onClick={() => setRoleTab("hunter")}>
-          <strong>Hunter page</strong>
+          <strong>Hunters</strong>
           <span>{hunters.length} accounts</span>
         </button>
         <button className={roleTab === "reviewer" ? "active" : ""} type="button" onClick={() => setRoleTab("reviewer")}>
-          <strong>Reviewer page</strong>
+          <strong>Reviewers</strong>
           <span>{reviewerAccounts.length} accounts</span>
         </button>
       </div>
@@ -127,16 +126,16 @@ export function AdminConsole({ initialData }: { initialData: AdminDashboardData 
 function HunterPage({ hunters, requests, packages, busy, run, updatePackage }: { hunters: UserRow[]; requests: RequestRow[]; packages: PackageRow[]; busy: string; run: AdminRun; updatePackage: (event: React.FormEvent<HTMLFormElement>, item: PackageRow) => Promise<void> }) {
   return <>
     <section className="panel admin-section" id="people">
-      <Heading eyebrow="Hunter accounts" title="Hunter control page" copy="Manage candidate accounts only. Reviewer tools are hidden in this page." />
-      <div className="admin-list-heading"><div><strong>Hunter account control</strong><small>Suspend or restore candidate accounts without affecting reviewers.</small></div><span>{hunters.length} Hunters</span></div>
-      <AccountTable users={hunters} busy={busy} run={run} empty="No Hunter accounts found." />
+      <Heading eyebrow="Accounts" title="Hunters" />
+      <div className="admin-list-heading"><div><strong>Hunter accounts</strong></div><span>{hunters.length} total</span></div>
+      <AccountTable users={hunters} busy={busy} run={run} empty="No Hunters." />
     </section>
 
     <section className="panel admin-section" id="pricing">
-      <Heading eyebrow="Hunter purchases" title="Review packages" copy="Pricing and credits apply to Hunter resume submissions." />
+      <Heading eyebrow="Pricing" title="Packages" />
       <div className="pricing-admin-grid">
         {packages.map((item) => <form className="pricing-admin-card" key={item.id} onSubmit={(event) => updatePackage(event, item)}>
-          <div><strong>{item.name}</strong><small>Package configuration</small></div>
+          <div><strong>{item.name}</strong><small>Package</small></div>
           <label>Price (GBP)<input name="price" type="number" min="0.5" step="0.01" defaultValue={(item.price_pence / 100).toFixed(2)} /></label>
           <label>Review credits<input name="reviews" type="number" min="1" max="100" defaultValue={item.review_count} /></label>
           <label className="toggle-label"><input name="active" type="checkbox" defaultChecked={item.is_active} /> Available to Hunters</label>
@@ -145,20 +144,20 @@ function HunterPage({ hunters, requests, packages, busy, run, updatePackage }: {
       </div>
     </section>
 
-    <RequestsTable title="Hunter resume requests" copy="Requests submitted by Hunters and their current delivery status." requests={requests} busy={busy} run={run} mode="hunter" />
+    <RequestsTable title="Resume requests" requests={requests} busy={busy} run={run} mode="hunter" />
   </>;
 }
 
 function ReviewerPage({ reviewers, reviewerProfiles, pendingCount, companies, requests, busy, run, createCompany }: { reviewers: UserRow[]; reviewerProfiles: ReviewerRow[]; pendingCount: number; companies: CompanyRow[]; requests: RequestRow[]; busy: string; run: AdminRun; createCompany: (event: React.FormEvent<HTMLFormElement>) => Promise<void> }) {
   return <>
     <section className="panel admin-section" id="people">
-      <Heading eyebrow="Reviewer accounts" title="Reviewer control page" copy="Manage reviewer access, verification, companies, and assigned work only." />
+      <Heading eyebrow="Accounts" title="Reviewers" />
       <div className="admin-reviewer-grid">
         <div className="admin-role-pane">
-          <div className="admin-list-heading"><div><strong>Reviewer account control</strong><small>Suspend or restore reviewer accounts without affecting Hunters.</small></div><span>{reviewers.length} Reviewers</span></div>
-          <AccountTable users={reviewers} busy={busy} run={run} empty="No Reviewer accounts found." />
+          <div className="admin-list-heading"><div><strong>Reviewer accounts</strong></div><span>{reviewers.length} total</span></div>
+          <AccountTable users={reviewers} busy={busy} run={run} empty="No Reviewers." />
           <div className="admin-subsection">
-            <div className="admin-list-heading"><div><strong>Verification queue</strong><small>Approve work-email accounts or reject profiles that do not meet requirements.</small></div><span>{pendingCount} pending</span></div>
+            <div className="admin-list-heading"><div><strong>Verification</strong></div><span>{pendingCount} pending</span></div>
             <div className="admin-card-list">
               {reviewerProfiles.length ? reviewerProfiles.map((reviewer) => <article className="admin-person-card" key={reviewer.user_id}>
                 <div className="avatar">{(reviewer.full_name || "R").slice(0, 2).toUpperCase()}</div>
@@ -168,13 +167,13 @@ function ReviewerPage({ reviewers, reviewerProfiles, pendingCount, companies, re
                   <button disabled={busy === reviewer.user_id} onClick={() => run("admin_set_reviewer_verification", { selected_user: reviewer.user_id, new_status: "verified" }, reviewer.user_id)}>Verify</button>
                   <button disabled={busy === reviewer.user_id} onClick={() => run("admin_set_reviewer_verification", { selected_user: reviewer.user_id, new_status: "rejected" }, reviewer.user_id)}>Reject</button>
                 </div>
-              </article>) : <p className="empty-inline">No reviewer profiles found.</p>}
+              </article>) : <p className="empty-inline">No profiles.</p>}
             </div>
           </div>
         </div>
 
         <aside className="admin-company-manager">
-          <div className="admin-list-heading"><div><strong>Reviewer companies</strong><small>Add a company before reviewers create accounts for it.</small></div></div>
+          <div className="admin-list-heading"><div><strong>Companies</strong></div></div>
           <form className="admin-company-form" onSubmit={createCompany}>
             <label>New company name<input name="companyName" required minLength={2} placeholder="Example: Google" /></label>
             <button className="button button-primary" disabled={busy === "company-create"}>{busy === "company-create" ? "Adding..." : "Add company"}</button>
@@ -186,13 +185,13 @@ function ReviewerPage({ reviewers, reviewerProfiles, pendingCount, companies, re
                 <div><strong>{company.name || "Company"}</strong><small>{company.verified_reviewer_count ?? 0} verified reviewers</small></div>
                 <button className="admin-action" disabled={busy === company.id} onClick={() => run("admin_set_company_status", { selected_company: company.id, active: !active }, company.id)}>{active ? "Pause" : "Enable"}</button>
               </article>;
-            }) : <p className="empty-inline">No companies available yet.</p>}
+            }) : <p className="empty-inline">No companies.</p>}
           </div>
         </aside>
       </div>
     </section>
 
-    <RequestsTable title="Reviewer assigned work" copy="Reviews that are claimed or completed by reviewers." requests={requests} busy={busy} run={run} mode="reviewer" />
+    <RequestsTable title="Assigned reviews" requests={requests} busy={busy} run={run} mode="reviewer" />
   </>;
 }
 
@@ -212,9 +211,9 @@ function AccountTable({ users, busy, run, empty }: { users: UserRow[]; busy: str
   </div>;
 }
 
-function RequestsTable({ title, copy, requests, busy, run, mode }: { title: string; copy: string; requests: RequestRow[]; busy: string; run: AdminRun; mode: RoleTab }) {
+function RequestsTable({ title, requests, busy, run, mode }: { title: string; requests: RequestRow[]; busy: string; run: AdminRun; mode: RoleTab }) {
   return <section className="panel admin-section" id="requests">
-    <Heading eyebrow={mode === "hunter" ? "Hunter review operations" : "Reviewer review operations"} title={title} copy={copy} />
+    <Heading eyebrow="Requests" title={title} />
     {requests.length ? <div className="admin-table-wrap">
       <table className="admin-table">
         <thead><tr><th>Request</th><th>Hunter</th><th>Reviewer</th><th>Status</th><th>Created</th><th>Action</th></tr></thead>
@@ -227,7 +226,7 @@ function RequestsTable({ title, copy, requests, busy, run, mode }: { title: stri
           <td>{item.status !== "completed" && <button className="admin-action" disabled={busy === item.id} onClick={() => run("admin_set_request_status", { selected_request: item.id, new_status: item.status === "cancelled" ? "open" : "cancelled" }, item.id)}>{item.status === "cancelled" ? "Reopen" : "Cancel"}</button>}</td>
         </tr>)}</tbody>
       </table>
-    </div> : <p className="empty-inline">{mode === "hunter" ? "No Hunter resume requests found." : "No assigned Reviewer work found."}</p>}
+    </div> : <p className="empty-inline">{mode === "hunter" ? "No requests." : "No assigned reviews."}</p>}
   </section>;
 }
 

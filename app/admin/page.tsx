@@ -18,31 +18,31 @@ export default async function AdminPage() {
   return <div className="dashboard-layout admin-layout">
     <aside className="dashboard-sidebar admin-sidebar">
       <Link className="brand brand-light" href="/admin"><span className="brand-mark">R</span><span>ResumeReview</span></Link>
-      <div className="role-tag">Administrator console</div>
+      <div className="role-tag">Admin</div>
       <nav>
-        <p>Control center</p>
+        <p>Menu</p>
         <Link className="active" href="/admin"><span>H</span>Overview</Link>
         <Link href="#people"><span>C</span>Accounts</Link>
         <Link href="#requests"><span>R</span>Requests</Link>
       </nav>
       <div className="sidebar-bottom">
         <div className="support-card">
-          <strong>Operations access</strong>
-          <p>Every action is checked against your administrator permission in Supabase.</p>
-          <a href="mailto:support@resumereview.app">Platform support</a>
+          <strong>Admin access</strong>
+          <p>Secure controls.</p>
+          <a href="mailto:support@resumereview.app">Support</a>
         </div>
         <form action={signOut}><button className="logout-button">Log out</button></form>
       </div>
     </aside>
     <section className="dashboard-main">
       <header className="dashboard-topbar admin-topbar">
-        <div><p>Platform administration</p><h2>Operations overview</h2></div>
+        <div><p>Admin</p><h2>Dashboard</h2></div>
         <div className="profile-summary"><span className="avatar">{initials}</span><div><strong>{profile.full_name}</strong><small>Administrator</small></div></div>
       </header>
       <main className="dashboard-content admin-content">
         <div className="page-heading">
-          <div><p className="eyebrow">Live platform control</p><h1>Choose the admin page you need</h1><p>Switch between a Hunter-only view and a Reviewer-only view from the top controls.</p></div>
-          <span className="live-pill">Live Supabase data</span>
+          <div><p className="eyebrow">Control panel</p><h1>Admin dashboard</h1></div>
+          <span className="live-pill">Live</span>
         </div>
         {error ? <p className="form-error">The admin dashboard could not load: {error.message}</p> : <AdminConsole initialData={initialData} />}
       </main>
