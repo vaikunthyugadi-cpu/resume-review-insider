@@ -658,6 +658,122 @@ label input:focus, label select:focus, label textarea:focus { border-color: #0a6
 .admin-table-wrap {
   border-color: #dde4ec;
 }
+.admin-role-switch {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 12px;
+  margin: 18px 0;
+}
+.admin-role-switch button {
+  display: flex;
+  min-height: 76px;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 5px;
+  padding: 16px 18px;
+  color: #384250;
+  background: #f8fafc;
+  border: 1px solid #dbe4ee;
+  border-radius: 13px;
+  text-align: left;
+  transition: .18s ease;
+}
+.admin-role-switch button:hover {
+  border-color: #9cc7ef;
+  background: #f3f8fd;
+}
+.admin-role-switch button.active {
+  color: #0a4f96;
+  background: linear-gradient(135deg,#eef6ff 0%,#fff 100%);
+  border-color: #0a66c2;
+  box-shadow: 0 8px 22px rgba(10,102,194,.1);
+}
+.admin-role-switch strong,
+.admin-role-switch span {
+  display: block;
+}
+.admin-role-switch strong {
+  font-size: 15px;
+  letter-spacing: -.01em;
+}
+.admin-role-switch span {
+  color: #677180;
+  font-size: 11px;
+  font-weight: 750;
+}
+.admin-role-pane {
+  display: grid;
+  gap: 14px;
+}
+.admin-reviewer-grid {
+  display: grid;
+  grid-template-columns: minmax(0,1.4fr) minmax(300px,.7fr);
+  align-items: start;
+  gap: 16px;
+}
+.admin-list-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.admin-list-heading strong,
+.admin-list-heading small {
+  display: block;
+}
+.admin-list-heading strong {
+  color: #20242a;
+  font-size: 13px;
+}
+.admin-list-heading small {
+  margin-top: 3px;
+  color: #6d7684;
+  font-size: 10px;
+  line-height: 1.45;
+}
+.admin-list-heading > span {
+  flex: 0 0 auto;
+  padding: 6px 10px;
+  color: #0a66c2;
+  background: #eaf3fc;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 850;
+}
+.admin-subsection {
+  display: grid;
+  gap: 12px;
+  margin-top: 6px;
+  padding-top: 16px;
+  border-top: 1px solid #e7ebf0;
+}
+.admin-company-manager {
+  display: grid;
+  gap: 13px;
+  padding: 16px;
+  background: linear-gradient(180deg,#f8fbff 0%,#fff 100%);
+  border: 1px solid #dce5ef;
+  border-radius: 13px;
+}
+.admin-company-form {
+  display: grid;
+  gap: 10px;
+  padding: 13px;
+  background: #fff;
+  border: 1px solid #e3e9f0;
+  border-radius: 11px;
+}
+.admin-company-form label {
+  margin: 0;
+}
+.admin-company-form input {
+  min-height: 42px;
+  margin-top: 7px;
+}
+.admin-company-form .button {
+  width: 100%;
+}
 .pricing-admin-grid {
   display: grid;
   grid-template-columns: repeat(3,minmax(0,1fr));
@@ -796,6 +912,16 @@ html[data-theme="dark"] .admin-compact-card,
 html[data-theme="dark"] .admin-table-wrap { border-color:#343a42; }
 html[data-theme="dark"] .admin-person-card:hover,
 html[data-theme="dark"] .admin-compact-card:hover { background:#202a35; border-color:#48515b; }
+html[data-theme="dark"] .admin-role-switch button { color:#d8dde4; background:#171b20; border-color:#343a42; }
+html[data-theme="dark"] .admin-role-switch button:hover { background:#202a35; border-color:#48515b; }
+html[data-theme="dark"] .admin-role-switch button.active { color:#dcecff; background:linear-gradient(135deg,#17324c 0%,#1d2228 100%); border-color:#67aef2; box-shadow:none; }
+html[data-theme="dark"] .admin-role-switch span,
+html[data-theme="dark"] .admin-list-heading small { color:#aab0b8; }
+html[data-theme="dark"] .admin-list-heading strong { color:#f0f2f4; }
+html[data-theme="dark"] .admin-list-heading > span { color:#67aef2; background:#17324c; }
+html[data-theme="dark"] .admin-subsection { border-color:#343a42; }
+html[data-theme="dark"] .admin-company-manager { background:linear-gradient(180deg,#1d2228 0%,#171b20 100%); border-color:#343a42; }
+html[data-theme="dark"] .admin-company-form { background:#15191e; border-color:#343a42; }
 html[data-theme="dark"] .pricing-admin-card { background:linear-gradient(180deg,#1d2228 0%,#171b20 100%); border-color:#343a42; box-shadow:none; }
 html[data-theme="dark"] .pricing-admin-card > div:first-child { border-color:#343a42; }
 html[data-theme="dark"] .pricing-admin-card strong { color:#f0f2f4; }
@@ -809,6 +935,7 @@ html[data-theme="dark"] .pricing-admin-card .toggle-label { color:#dcecff; backg
   .portal-search { grid-template-columns: 1fr 1fr; }
   .portal-search-button { grid-column: 1 / -1; width: 100%; }
   .admin-metrics { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .admin-reviewer-grid { grid-template-columns: minmax(0,1fr); }
   .pricing-admin-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
 }
 @media (max-width: 780px) {
@@ -822,6 +949,10 @@ html[data-theme="dark"] .pricing-admin-card .toggle-label { color:#dcecff; backg
   .dashboard-sidebar nav a { color:#4c535d; }
   .dashboard-sidebar nav a:hover, .dashboard-sidebar nav a.active { color:#0a66c2; background:#eef6ff; }
   html[data-theme="dark"] .dashboard-sidebar { background:#1d2228; }
+  .admin-role-switch { grid-template-columns: minmax(0,1fr); }
+  .admin-role-switch button { min-height: 66px; }
+  .admin-list-heading { align-items: flex-start; flex-direction: column; }
+  .admin-list-heading > span { align-self: flex-start; }
   .pricing-admin-grid { grid-template-columns: minmax(0,1fr); gap: 12px; }
   .pricing-admin-card { padding: 15px; }
 }
