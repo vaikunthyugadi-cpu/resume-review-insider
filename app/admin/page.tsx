@@ -22,10 +22,8 @@ export default async function AdminPage() {
       <nav>
         <p>Control center</p>
         <Link className="active" href="/admin"><span>H</span>Overview</Link>
-        <Link href="#people"><span>C</span>Controls</Link>
+        <Link href="#people"><span>C</span>Accounts</Link>
         <Link href="#requests"><span>R</span>Requests</Link>
-        <Link href="#pricing"><span>P</span>Pricing</Link>
-        <Link href="#support"><span>S</span>Support</Link>
       </nav>
       <div className="sidebar-bottom">
         <div className="support-card">
@@ -43,7 +41,7 @@ export default async function AdminPage() {
       </header>
       <main className="dashboard-content admin-content">
         <div className="page-heading">
-          <div><p className="eyebrow">Live platform control</p><h1>Everything that needs attention</h1><p>Manage Hunters, Reviewers, companies, review flow, pricing, and support.</p></div>
+          <div><p className="eyebrow">Live platform control</p><h1>Choose the admin page you need</h1><p>Switch between a Hunter-only view and a Reviewer-only view from the top controls.</p></div>
           <span className="live-pill">Live Supabase data</span>
         </div>
         {error ? <p className="form-error">The admin dashboard could not load: {error.message}</p> : <AdminConsole initialData={initialData} />}

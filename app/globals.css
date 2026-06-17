@@ -658,11 +658,39 @@ label input:focus, label select:focus, label textarea:focus { border-color: #0a6
 .admin-table-wrap {
   border-color: #dde4ec;
 }
+.admin-role-hero {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) minmax(360px,.85fr);
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 18px;
+  padding: 20px;
+  background: linear-gradient(135deg,#fff 0%,#eef6ff 100%);
+  border: 1px solid #dbe7f3;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(31,35,40,.05);
+}
+.admin-role-hero h2 {
+  margin: 0 0 6px;
+  color: #20242a;
+  font-size: 22px;
+  letter-spacing: -.03em;
+}
+.admin-role-hero p:last-child {
+  max-width: 700px;
+  margin: 0;
+  color: #5f6673;
+  font-size: 12px;
+  line-height: 1.55;
+}
 .admin-role-switch {
   display: grid;
   grid-template-columns: repeat(2,minmax(0,1fr));
   gap: 12px;
   margin: 18px 0;
+}
+.admin-role-switch-top {
+  margin: 0;
 }
 .admin-role-switch button {
   display: flex;
@@ -912,6 +940,9 @@ html[data-theme="dark"] .admin-compact-card,
 html[data-theme="dark"] .admin-table-wrap { border-color:#343a42; }
 html[data-theme="dark"] .admin-person-card:hover,
 html[data-theme="dark"] .admin-compact-card:hover { background:#202a35; border-color:#48515b; }
+html[data-theme="dark"] .admin-role-hero { background:linear-gradient(135deg,#1d2228 0%,#17324c 100%); border-color:#343a42; box-shadow:none; }
+html[data-theme="dark"] .admin-role-hero h2 { color:#f0f2f4; }
+html[data-theme="dark"] .admin-role-hero p:last-child { color:#aab0b8; }
 html[data-theme="dark"] .admin-role-switch button { color:#d8dde4; background:#171b20; border-color:#343a42; }
 html[data-theme="dark"] .admin-role-switch button:hover { background:#202a35; border-color:#48515b; }
 html[data-theme="dark"] .admin-role-switch button.active { color:#dcecff; background:linear-gradient(135deg,#17324c 0%,#1d2228 100%); border-color:#67aef2; box-shadow:none; }
@@ -935,6 +966,7 @@ html[data-theme="dark"] .pricing-admin-card .toggle-label { color:#dcecff; backg
   .portal-search { grid-template-columns: 1fr 1fr; }
   .portal-search-button { grid-column: 1 / -1; width: 100%; }
   .admin-metrics { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .admin-role-hero { grid-template-columns: minmax(0,1fr); }
   .admin-reviewer-grid { grid-template-columns: minmax(0,1fr); }
   .pricing-admin-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
 }
