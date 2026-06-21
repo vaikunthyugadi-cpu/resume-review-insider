@@ -3711,3 +3711,88 @@ html:not([data-theme="dark"]) .admin-metrics .stat-card:nth-child(4) { --tile-co
 html:not([data-theme="dark"]) .admin-metrics .stat-card:nth-child(5) { --tile-color:#8b5cf6; --tile-soft:#f1e9ff; }
 html:not([data-theme="dark"]) .admin-workspace .admin-section::before { width:145px; background:linear-gradient(90deg,#4285f4,#8b5cf6,#ea4335,#fbbc04,#34a853); }
 html:not([data-theme="dark"]) .admin-company-manager { background:radial-gradient(circle at 95% 3%,rgba(66,133,244,.09),transparent 12rem),linear-gradient(145deg,#fff,#f8f7ff); }
+
+/* Larger, more distinctive ResumeReview brand lockup. */
+.brand {
+  gap: 13px;
+  font-family: "Segoe UI Variable Display", "Segoe UI", Inter, ui-sans-serif, system-ui, sans-serif;
+  font-size: 25px;
+  font-weight: 780;
+  letter-spacing: -.045em;
+  line-height: 1;
+}
+
+.brand-mark {
+  width: 48px;
+  height: 48px;
+  border-radius: 16px 16px 16px 6px;
+  font-family: "Segoe UI Variable Display", "Segoe UI", Inter, ui-sans-serif, system-ui, sans-serif;
+  font-size: 24px;
+  font-weight: 820;
+  letter-spacing: -.04em;
+}
+
+.marketing-nav .brand,
+.portal-nav .brand {
+  font-size: 23px;
+}
+
+.marketing-nav .brand-mark,
+.portal-nav .brand-mark {
+  width: 44px;
+  height: 44px;
+  font-size: 22px;
+}
+
+.dashboard-sidebar .brand {
+  padding-inline: 5px;
+  font-size: 22px;
+}
+
+.dashboard-sidebar .brand-mark {
+  width: 46px;
+  height: 46px;
+  font-size: 22px;
+}
+
+.auth-brand-panel .brand {
+  font-size: 27px;
+}
+
+.auth-brand-panel .brand-mark {
+  width: 52px;
+  height: 52px;
+  font-size: 26px;
+}
+
+@media (max-width: 780px) {
+  .dashboard-sidebar .brand-mark {
+    width: 42px;
+    height: 42px;
+    font-size: 20px;
+  }
+
+  .auth-mobile-brand {
+    font-size: 21px;
+  }
+
+  .auth-mobile-brand .brand-mark {
+    width: 42px;
+    height: 42px;
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .marketing-nav .brand,
+  .portal-nav .brand {
+    font-size: 20px;
+  }
+
+  .marketing-nav .brand-mark,
+  .portal-nav .brand-mark {
+    width: 40px;
+    height: 40px;
+    font-size: 19px;
+  }
+}
