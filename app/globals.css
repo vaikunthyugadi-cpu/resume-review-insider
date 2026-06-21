@@ -250,6 +250,125 @@ legend { margin-bottom: 10px; }
   .benefit-section > div:first-child { display: block; }
 }
 
+/* Company list replacing Hunter notifications */
+.company-showcase {
+  margin-bottom: 20px;
+}
+
+.company-showcase-list {
+  display: grid;
+  gap: 10px;
+}
+
+.company-showcase-row {
+  --company-color: #0b57d0;
+  --company-soft: #e8f0fe;
+  display: grid;
+  min-height: 98px;
+  grid-template-columns: 52px minmax(0,1fr) auto;
+  align-items: center;
+  gap: 15px;
+  padding: 15px 17px;
+  background: linear-gradient(110deg,#fff,var(--company-soft));
+  border: 1px solid color-mix(in srgb,var(--company-color) 17%,#e0e4eb);
+  border-radius: 20px;
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+
+.company-showcase-row:hover {
+  border-color: color-mix(in srgb,var(--company-color) 42%,#dfe4eb);
+  box-shadow: 0 10px 24px color-mix(in srgb,var(--company-color) 10%,transparent);
+  transform: translateX(3px);
+}
+
+.company-showcase-icon {
+  display: grid;
+  width: 50px;
+  height: 50px;
+  place-items: center;
+  color: var(--company-color);
+  background: rgba(255,255,255,.85);
+  border: 1px solid color-mix(in srgb,var(--company-color) 17%,transparent);
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.company-showcase-copy strong,
+.company-showcase-copy small,
+.company-showcase-copy span {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.company-showcase-copy strong {
+  color: #272a2f;
+  font-size: 14px;
+}
+
+.company-showcase-copy small {
+  margin-top: 4px;
+  color: #59616d;
+  font-size: 11px;
+}
+
+.company-showcase-copy span {
+  margin-top: 6px;
+  color: var(--company-color);
+  font-size: 10px;
+  font-weight: 750;
+}
+
+.company-showcase-row .company-submit-button,
+.company-preview-button {
+  width: auto;
+  min-width: 164px;
+}
+
+.company-preview-button:disabled {
+  color: #6d7075;
+  background: rgba(255,255,255,.75);
+  border: 1px dashed #bfc5ce;
+  cursor: default;
+  opacity: 1;
+}
+
+html[data-theme="dark"] .company-showcase-row {
+  background: linear-gradient(110deg,#1c1a28,#22202f);
+  border-color: #3d3850;
+}
+
+html[data-theme="dark"] .company-showcase-copy strong {
+  color: #f3efff;
+}
+
+html[data-theme="dark"] .company-showcase-copy small {
+  color: #aaa5bf;
+}
+
+html[data-theme="dark"] .company-showcase-icon,
+html[data-theme="dark"] .company-preview-button:disabled {
+  background: #252232;
+}
+
+@media (max-width: 700px) {
+  .company-showcase-row {
+    grid-template-columns: 46px minmax(0,1fr);
+    padding: 14px;
+  }
+
+  .company-showcase-icon {
+    width: 44px;
+    height: 44px;
+  }
+
+  .company-showcase-row .company-submit-button,
+  .company-preview-button {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+}
+
 @media (max-width: 600px) {
   .marketing-nav { height: 70px; padding: 0 18px; }
   .marketing-nav .nav-link { display: none; }
