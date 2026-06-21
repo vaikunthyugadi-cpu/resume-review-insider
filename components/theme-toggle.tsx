@@ -27,7 +27,7 @@ export function ThemeToggle() {
       onClick={toggleTheme}
       type="button"
     >
-      <span aria-hidden="true" className="theme-toggle-icon">{theme === "dark" ? "☀" : "☾"}</span>
+      <span aria-hidden="true" className="theme-toggle-icon">{theme === "dark" ? "LT" : "DK"}</span>
       <span>{theme === "dark" ? "Light" : "Dark"}</span>
     </button>
   );

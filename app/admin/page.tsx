@@ -15,15 +15,15 @@ export default async function AdminPage() {
   const initials = profile.full_name.split(" ").map((part) => part[0]).join("").slice(0, 2).toUpperCase();
   const initialData = { ...((data || {}) as AdminDashboardData), packages: packages ?? [] };
 
-  return <div className="dashboard-layout admin-layout">
+  return <div className="dashboard-layout admin-layout admin-workspace">
     <aside className="dashboard-sidebar admin-sidebar">
       <Link className="brand brand-light" href="/admin"><span className="brand-mark">R</span><span>ResumeReview</span></Link>
       <div className="role-tag">Admin</div>
       <nav>
         <p>Menu</p>
-        <Link className="active" href="/admin"><span>H</span>Overview</Link>
-        <Link href="#people"><span>C</span>Accounts</Link>
-        <Link href="#requests"><span>R</span>Requests</Link>
+        <Link className="active" href="/admin"><span>01</span>Overview</Link>
+        <Link href="#people"><span>02</span>Accounts</Link>
+        <Link href="#requests"><span>03</span>Requests</Link>
       </nav>
       <div className="sidebar-bottom">
         <div className="support-card">

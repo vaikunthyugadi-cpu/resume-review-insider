@@ -1,6 +1,14 @@
 import Link from "next/link";
 
-const categories = ["Software & IT", "Product", "Finance", "Marketing", "Data Science", "Freshers"];
+const categories = [
+  ["DEV", "Software & IT", "Build a sharper technical story"],
+  ["PM", "Product", "Show decisions, impact, and ownership"],
+  ["FIN", "Finance", "Present precision and commercial value"],
+  ["MKT", "Marketing", "Turn campaigns into clear outcomes"],
+  ["DATA", "Data Science", "Make models and insights easy to scan"],
+  ["NEW", "Freshers", "Create a confident first impression"]
+];
+
 const benefits = [
   ["Company-specific feedback", "Choose the company and role you are targeting, then get advice that matches the hiring bar."],
   ["Verified professionals", "Reviewers share practical experience from inside the companies candidates want to join."],
@@ -24,20 +32,49 @@ export default function Home() {
       <section className="portal-hero">
         <div className="portal-hero-copy">
           <span className="portal-kicker">Resume feedback from verified company professionals</span>
-          <h1>Make your next application stronger.</h1>
+          <h1>Turn your resume into a stronger career story.</h1>
           <p>Get focused, role-specific resume feedback before you apply to the companies you care about.</p>
           <div className="portal-search" role="group" aria-label="Start a resume review">
-            <div><span className="search-icon">⌕</span><strong>Target role or company</strong><small>Product Manager, Software Engineer...</small></div>
-            <div><span className="search-icon">▣</span><strong>Upload your resume</strong><small>PDF or Word document</small></div>
+            <div><span className="search-icon">01</span><strong>Target role or company</strong><small>Product Manager, Software Engineer...</small></div>
+            <div><span className="search-icon">02</span><strong>Upload your resume</strong><small>PDF or Word document</small></div>
             <Link className="button button-primary portal-search-button" href="/signup?role=hunter">Get reviewed</Link>
           </div>
           <p className="portal-trust"><span>✓</span> Secure files <span>✓</span> Verified reviewers <span>✓</span> Actionable feedback</p>
         </div>
+
+        <div className="portal-hero-art" aria-hidden="true">
+          <div className="career-board">
+            <div className="career-board-head"><span>Resume workspace</span><b>LIVE</b></div>
+            <div className="career-profile">
+              <span className="career-avatar">AK</span>
+              <div><strong>Product candidate</strong><small>Targeting a high-growth team</small></div>
+              <span className="career-score">8.7</span>
+            </div>
+            <div className="career-progress"><span></span></div>
+            <div className="career-insights">
+              <article><i>01</i><div><strong>Impact</strong><small>Add measurable outcomes</small></div></article>
+              <article><i>02</i><div><strong>Clarity</strong><small>Tighten the opening summary</small></div></article>
+              <article><i>03</i><div><strong>Fit</strong><small>Match the target role</small></div></article>
+            </div>
+          </div>
+          <div className="floating-note note-one"><span>CV</span><strong>Resume ready</strong></div>
+          <div className="floating-note note-two"><span>7+</span><strong>Actionable tips</strong></div>
+          <div className="floating-note note-three"><span>OK</span><strong>Verified reviewer</strong></div>
+        </div>
       </section>
 
       <section className="portal-section portal-categories">
-        <div className="portal-section-heading"><div><span className="eyebrow">Explore by career path</span><h2>Feedback for the role you want</h2></div><Link href="/signup?role=hunter">View all options →</Link></div>
-        <div className="category-grid">{categories.map((category, index) => <Link href="/signup?role=hunter" className="category-card" key={category}><span className="category-icon">{["⌘","◆","₹","◉","▥","★"][index]}</span><strong>{category}</strong><small>Role-focused resume reviews</small><b>›</b></Link>)}</div>
+        <div className="portal-section-heading">
+          <div><span className="eyebrow">Explore by career path</span><h2>Feedback designed around where you are going</h2></div>
+          <Link href="/signup?role=hunter">View all options <span aria-hidden="true">-&gt;</span></Link>
+        </div>
+        <div className="category-grid">
+          {categories.map(([code, title, copy], index) => (
+            <Link href="/signup?role=hunter" className={`category-card category-tone-${index + 1}`} key={title}>
+              <span className="category-icon">{code}</span><strong>{title}</strong><small>{copy}</small><b aria-hidden="true">+</b>
+            </Link>
+          ))}
+        </div>
       </section>
 
       <section className="portal-banner">

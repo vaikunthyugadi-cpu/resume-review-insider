@@ -26,7 +26,7 @@ export function DashboardShell({
   const initials = profile.full_name.split(" ").map((part) => part[0]).join("").slice(0, 2).toUpperCase();
 
   return (
-    <div className="dashboard-layout">
+    <div className={`dashboard-layout ${reviewer ? "reviewer-workspace" : "hunter-workspace"}`}>
       <aside className="dashboard-sidebar">
         <Link className="brand brand-light" href="/">
           <span className="brand-mark">R</span><span>ResumeReview</span>
@@ -36,15 +36,15 @@ export function DashboardShell({
           <p>Workspace</p>
           {links.map(([id, href, label]) => (
             <Link className={active === id ? "active" : ""} href={href} key={id}>
-              <span>{id === "overview" ? "⌂" : id === "new" || id === "queue" ? "+" : "✓"}</span>{label}
+              <span>{id === "overview" ? "01" : id === "new" || id === "queue" ? "02" : "03"}</span>{label}
             </Link>
           ))}
           <p>Account</p>
-          <Link href="/dashboard"><span>○</span>Account routing</Link>
+          <Link href="/dashboard"><span>A</span>Account routing</Link>
         </nav>
         <div className="sidebar-bottom">
           <div className="support-card"><strong>Need help?</strong><p>Contact support for account or review assistance.</p><a href="mailto:support@resumereview.app">Contact support</a></div>
-          <form action={signOut}><button className="logout-button">↪ Log out</button></form>
+          <form action={signOut}><button className="logout-button">Log out</button></form>
         </div>
       </aside>
       <section className="dashboard-main">
