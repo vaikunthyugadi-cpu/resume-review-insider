@@ -3723,6 +3723,7 @@ html:not([data-theme="dark"]) .admin-company-manager { background:radial-gradien
 }
 
 .brand-mark {
+  flex: 0 0 auto;
   width: 48px;
   height: 48px;
   border-radius: 16px 16px 16px 6px;
