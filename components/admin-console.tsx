@@ -85,6 +85,11 @@ export function AdminConsole({ initialData }: { initialData: AdminDashboardData 
     if (saved) formElement.reset();
   }
 
+  async function deleteCompany(company: CompanyRow) {
+    if (!company.id || !window.confirm(`Delete ${company.name || "this company"} permanently? This is only allowed when it has no reviewers or review history.`)) return;
+    await run("admin_delete_company", { selected_company: company.id }, `delete-${company.id}`);
+  }
+
   const hunterMetrics = [
     ["Hunters", hunters.length, "Total"],
     ["Active", activeHunters, "Live accounts"],
@@ -124,7 +129,7 @@ export function AdminConsole({ initialData }: { initialData: AdminDashboardData 
       {selectedMetrics.map(([label, value, note]) => <article className="stat-card" key={String(label)}><span>{label}</span><strong>{value}</strong><small>{note}</small></article>)}
     </section>
 
-    {roleTab === "hunter" ? <HunterPage hunters={hunters} requests={hunterRequests} packages={data.packages ?? []} busy={busy} run={run} updatePackage={updatePackage} /> : <ReviewerPage reviewers={reviewerAccounts} reviewerProfiles={data.reviewers ?? []} pendingCount={pendingReviewers.length} companies={data.companies ?? []} requests={reviewerRequests} complaints={data.complaints ?? []} busy={busy} run={run} createCompany={createCompany} />}
+    {roleTab === "hunter" ? <HunterPage hunters={hunters} requests={hunterRequests} packages={data.packages ?? []} busy={busy} run={run} updatePackage={updatePackage} /> : <ReviewerPage reviewers={reviewerAccounts} reviewerProfiles={data.reviewers ?? []} pendingCount={pendingReviewers.length} companies={data.companies ?? []} requests={reviewerRequests} complaints={data.complaints ?? []} busy={busy} run={run} createCompany={createCompany} deleteCompany={deleteCompany} />}
   </>;
 }
 
@@ -153,7 +158,7 @@ function HunterPage({ hunters, requests, packages, busy, run, updatePackage }: {
   </>;
 }
 
-function ReviewerPage({ reviewers, reviewerProfiles, pendingCount, companies, requests, complaints, busy, run, createCompany }: { reviewers: UserRow[]; reviewerProfiles: ReviewerRow[]; pendingCount: number; companies: CompanyRow[]; requests: RequestRow[]; complaints: ComplaintRow[]; busy: string; run: AdminRun; createCompany: (event: React.FormEvent<HTMLFormElement>) => Promise<void> }) {
+function ReviewerPage({ reviewers, reviewerProfiles, pendingCount, companies, requests, complaints, busy, run, createCompany, deleteCompany }: { reviewers: UserRow[]; reviewerProfiles: ReviewerRow[]; pendingCount: number; companies: CompanyRow[]; requests: RequestRow[]; complaints: ComplaintRow[]; busy: string; run: AdminRun; createCompany: (event: React.FormEvent<HTMLFormElement>) => Promise<void>; deleteCompany: (company: CompanyRow) => Promise<void> }) {
   return <>
     <section className="panel admin-section" id="people">
       <Heading eyebrow="Accounts" title="Reviewers" />
@@ -189,7 +194,10 @@ function ReviewerPage({ reviewers, reviewerProfiles, pendingCount, companies, re
               const active = company.is_active ?? company.active ?? true;
               return <article className="admin-compact-card" key={company.id}>
                 <div><strong>{company.name || "Company"}</strong><small>{company.contact_email || "Email not added"}</small><small>{company.verified_reviewer_count ?? 0} verified reviewers</small></div>
-                <button className="admin-action" disabled={busy === company.id} onClick={() => run("admin_set_company_status", { selected_company: company.id, active: !active }, company.id)}>{active ? "Pause" : "Enable"}</button>
+                <div className="admin-company-actions">
+                  <button className="admin-action" disabled={busy === company.id || busy === `delete-${company.id}`} onClick={() => run("admin_set_company_status", { selected_company: company.id, active: !active }, company.id)}>{active ? "Pause" : "Enable"}</button>
+                  <button className="admin-action admin-delete-action" disabled={busy === company.id || busy === `delete-${company.id}`} onClick={() => deleteCompany(company)}>{busy === `delete-${company.id}` ? "Deleting..." : "Delete"}</button>
+                </div>
               </article>;
             }) : <p className="empty-inline">No companies.</p>}
           </div>
