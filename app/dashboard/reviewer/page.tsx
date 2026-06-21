@@ -3,15 +3,15 @@ import { DashboardShell } from "@/components/dashboard-shell";
 import { NotificationCenter } from "@/components/notification-center";
 import { requireProfile } from "@/lib/auth";
 
-type QueueRow = { id:string; status:string; target_role:string; created_at:string; hunter_id:string; hunter_name?:string };
+type QueueRow = { id:string; status:string; target_role:string; created_at:string; hunter_id:string; claimed_by:string|null; hunter_name?:string };
 type NotificationRow = { id:string; title:string; message:string; link:string|null; read_at:string|null; created_at:string };
 type EarningRow = { id:string; request_id:string; amount_pence:number; created_at:string; paid_at:string|null };
 
 export default async function ReviewerDashboard(){
   const {supabase,profile}=await requireProfile("reviewer");
   await supabase.rpc("release_expired_reviews");
-  const [{data},{data:notificationData},{data:earningData}]=await Promise.all([
-    profile.work_email_verified ? supabase.from("review_requests").select("id, status, target_role, created_at, hunter_id").in("status",["open","claimed","completed"]).order("created_at",{ascending:false}) : Promise.resolve({data:[]}),
+  const [{data,error:requestsError},{data:notificationData},{data:earningData}]=await Promise.all([
+    profile.work_email_verified ? supabase.from("review_requests").select("id, status, target_role, created_at, hunter_id, claimed_by").in("status",["open","claimed","completed"]).order("created_at",{ascending:false}) : Promise.resolve({data:[],error:null}),
     supabase.from("notifications").select("id, title, message, link, read_at, created_at").eq("user_id",profile.id).order("created_at",{ascending:false}).limit(8),
     supabase.from("reviewer_earnings").select("id, request_id, amount_pence, created_at, paid_at").eq("reviewer_id",profile.id).order("created_at",{ascending:false}).limit(20)
   ]);
@@ -19,10 +19,13 @@ export default async function ReviewerDashboard(){
   const hunterIds=[...new Set(all.map(item=>item.hunter_id))];
   const {data:hunters}=hunterIds.length?await supabase.from("users_profile").select("id, full_name").in("id",hunterIds):{data:[]};
   const names=new Map((hunters??[]).map(h=>[h.id,h.full_name])); all.forEach(item=>{item.hunter_name=names.get(item.hunter_id)??"Candidate"});
-  const queue=all.filter(item=>item.status==="open"),claimed=all.filter(item=>item.status==="claimed"),completed=all.filter(item=>item.status==="completed");
+  const queue=all.filter(item=>item.status==="open");
+  const claimed=all.filter(item=>item.status==="claimed"&&item.claimed_by===profile.id);
+  const completed=all.filter(item=>item.status==="completed"&&item.claimed_by===profile.id);
   const earnings=(earningData??[]) as EarningRow[]; const total=earnings.reduce((sum,item)=>sum+item.amount_pence,0);
   return <DashboardShell profile={profile} active="overview">
     <div className="page-heading"><div><h1>Reviews at a glance</h1><p>Help candidates sharpen their story. Earnings unlock after strong Hunter scores.</p></div></div>
+    {requestsError&&<p className="form-error" role="alert">Reviews could not be loaded. Please refresh and try again.</p>}
     <NotificationCenter initialItems={(notificationData??[]) as NotificationRow[]} />
     <section className="stat-grid"><Stat label="Open requests" value={queue.length} note={`For ${profile.company_name??"your company"}`} /><Stat label="In progress" value={claimed.length} note="Claimed reviews" /><Stat label="Completed" value={completed.length} note="Available history" /><Stat label="Recorded earnings" value={`£${(total/100).toFixed(2)}`} note="Unlocked above 7/10" /></section>
     {!profile.work_email_verified&&<section className="panel verification-banner"><strong>Verify your work email to start reviewing</strong><p>Confirm the link sent to your company email. An administrator can also review your account if additional verification is needed.</p></section>}

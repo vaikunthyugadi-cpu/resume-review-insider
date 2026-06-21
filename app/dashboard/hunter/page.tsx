@@ -8,7 +8,7 @@ type NotificationRow = { id: string; title: string; message: string; link: strin
 
 export default async function HunterDashboard() {
   const { supabase, user, profile } = await requireProfile("hunter");
-  const [{ data }, { data: wallet }, { data: notificationData }] = await Promise.all([
+  const [{ data, error: requestsError }, { data: wallet }, { data: notificationData }] = await Promise.all([
     supabase.from("review_requests").select("id, status, target_role, created_at, due_at, companies(name), resumes(file_name), review_feedback(id)").eq("hunter_id", user.id).order("created_at", { ascending: false }),
     supabase.from("hunter_wallets").select("review_credits").eq("user_id", user.id).single(),
     supabase.from("notifications").select("id, title, message, link, read_at, created_at").eq("user_id", user.id).order("created_at", { ascending: false }).limit(8)
@@ -20,6 +20,7 @@ export default async function HunterDashboard() {
 
   return <DashboardShell profile={profile} active="overview">
     <div className="page-heading"><div><h1>Your resume journey</h1><p>Track every submission and turn insider feedback into a stronger application.</p></div><Link className="button button-primary" href="/dashboard/hunter/new">+ Submit a resume</Link></div>
+    {requestsError && <p className="form-error" role="alert">Your reviews could not be loaded. Please refresh and try again.</p>}
     <NotificationCenter initialItems={(notificationData ?? []) as NotificationRow[]} />
     <section className="stat-grid"><Stat label="Submitted" value={requests.length} note="Total review requests" /><Stat label="Waiting" value={waiting} note="Available to reviewers" /><Stat label="In progress" value={inProgress} note="Claimed by an insider" /><Stat label="Review credits" value={wallet?.review_credits ?? 0} note={completed + " completed reviews"} /></section>
     <section className="panel" id="reviews"><div className="panel-heading"><div><h2>My reviews</h2><p>Your latest submissions and feedback status.</p></div></div>{requests.length ? <div className="data-list">{requests.map(request => <Link className="data-row" href={`/dashboard/hunter/reviews/${request.id}`} key={request.id}><span className="company-logo">{request.companies?.name.slice(0,2).toUpperCase() ?? "RR"}</span><div className="row-main"><strong>{request.companies?.name ?? "Target company"}</strong><small>{request.target_role} · {new Date(request.created_at).toLocaleDateString()}</small></div><Status value={request.status} /><span className="row-arrow">›</span></Link>)}</div> : <EmptyState />}</section>

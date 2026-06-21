@@ -36,6 +36,7 @@ export function AdminConsole({ initialData }: { initialData: AdminDashboardData 
   const activeReviewers = reviewerAccounts.filter((user) => user.account_status === "active").length;
   const suspendedHunters = hunters.filter((user) => user.account_status === "suspended").length;
   const pendingReviewers = (data.reviewers ?? []).filter((reviewer) => reviewer.verification_status !== "verified");
+  const openComplaints = (data.complaints ?? []).filter((complaint) => complaint.status !== "resolved");
   const hunterRequests = data.requests ?? [];
   const reviewerRequests = (data.requests ?? []).filter((request) => request.status === "claimed" || request.status === "completed" || Boolean(request.reviewer_name));
   const completedRequests = (data.requests ?? []).filter((request) => request.status === "completed").length;
@@ -92,7 +93,7 @@ export function AdminConsole({ initialData }: { initialData: AdminDashboardData 
     ["Active", activeReviewers, "Live accounts"],
     ["Pending", pendingReviewers.length, "Verify"],
     ["Companies", (data.companies ?? []).length, "Listed"],
-    ["Assigned", reviewerRequests.length, "Reviews"]
+    ["Reports", openComplaints.length, "Open"]
   ];
   const selectedMetrics = roleTab === "hunter" ? hunterMetrics : reviewerMetrics;
 
@@ -119,7 +120,7 @@ export function AdminConsole({ initialData }: { initialData: AdminDashboardData 
       {selectedMetrics.map(([label, value, note]) => <article className="stat-card" key={String(label)}><span>{label}</span><strong>{value}</strong><small>{note}</small></article>)}
     </section>
 
-    {roleTab === "hunter" ? <HunterPage hunters={hunters} requests={hunterRequests} packages={data.packages ?? []} busy={busy} run={run} updatePackage={updatePackage} /> : <ReviewerPage reviewers={reviewerAccounts} reviewerProfiles={data.reviewers ?? []} pendingCount={pendingReviewers.length} companies={data.companies ?? []} requests={reviewerRequests} busy={busy} run={run} createCompany={createCompany} />}
+    {roleTab === "hunter" ? <HunterPage hunters={hunters} requests={hunterRequests} packages={data.packages ?? []} busy={busy} run={run} updatePackage={updatePackage} /> : <ReviewerPage reviewers={reviewerAccounts} reviewerProfiles={data.reviewers ?? []} pendingCount={pendingReviewers.length} companies={data.companies ?? []} requests={reviewerRequests} complaints={data.complaints ?? []} busy={busy} run={run} createCompany={createCompany} />}
   </>;
 }
 
@@ -148,7 +149,7 @@ function HunterPage({ hunters, requests, packages, busy, run, updatePackage }: {
   </>;
 }
 
-function ReviewerPage({ reviewers, reviewerProfiles, pendingCount, companies, requests, busy, run, createCompany }: { reviewers: UserRow[]; reviewerProfiles: ReviewerRow[]; pendingCount: number; companies: CompanyRow[]; requests: RequestRow[]; busy: string; run: AdminRun; createCompany: (event: React.FormEvent<HTMLFormElement>) => Promise<void> }) {
+function ReviewerPage({ reviewers, reviewerProfiles, pendingCount, companies, requests, complaints, busy, run, createCompany }: { reviewers: UserRow[]; reviewerProfiles: ReviewerRow[]; pendingCount: number; companies: CompanyRow[]; requests: RequestRow[]; complaints: ComplaintRow[]; busy: string; run: AdminRun; createCompany: (event: React.FormEvent<HTMLFormElement>) => Promise<void> }) {
   return <>
     <section className="panel admin-section" id="people">
       <Heading eyebrow="Accounts" title="Reviewers" />
@@ -192,6 +193,7 @@ function ReviewerPage({ reviewers, reviewerProfiles, pendingCount, companies, re
     </section>
 
     <RequestsTable title="Assigned reviews" requests={requests} busy={busy} run={run} mode="reviewer" />
+    <ReportsPanel complaints={complaints} busy={busy} run={run} />
   </>;
 }
 
@@ -227,6 +229,23 @@ function RequestsTable({ title, requests, busy, run, mode }: { title: string; re
         </tr>)}</tbody>
       </table>
     </div> : <p className="empty-inline">{mode === "hunter" ? "No requests." : "No assigned reviews."}</p>}
+  </section>;
+}
+
+function ReportsPanel({ complaints, busy, run }: { complaints: ComplaintRow[]; busy: string; run: AdminRun }) {
+  return <section className="panel admin-section" id="reports">
+    <Heading eyebrow="Quality" title="Reports" />
+    <div className="admin-card-list">
+      {complaints.length ? complaints.map((complaint) => <article className="admin-compact-card admin-report-card" key={complaint.id}>
+        <div>
+          <strong>{(complaint.category || "other").replaceAll("_", " ")}</strong>
+          <small>{complaint.details || "No details"} · {date(complaint.created_at)}</small>
+        </div>
+        {complaint.status === "resolved"
+          ? <Badge value="completed" />
+          : <button className="admin-action" disabled={busy === complaint.id} onClick={() => run("admin_resolve_complaint", { selected_complaint: complaint.id }, complaint.id)}>Resolve</button>}
+      </article>) : <p className="empty-inline">No reports.</p>}
+    </div>
   </section>;
 }
 

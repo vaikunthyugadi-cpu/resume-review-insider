@@ -11,8 +11,11 @@ export function NotificationCenter({ initialItems }: { initialItems: Notificatio
   if (!items.length) return null;
 
   async function markRead(id: string) {
-    setItems(current => current.map(item => item.id === id ? { ...item, read_at: item.read_at || new Date().toISOString() } : item));
-    await createClient().from("notifications").update({ read_at: new Date().toISOString() }).eq("id", id);
+    const readAt = new Date().toISOString();
+    const previous = items;
+    setItems(current => current.map(item => item.id === id ? { ...item, read_at: item.read_at || readAt } : item));
+    const { error } = await createClient().from("notifications").update({ read_at: readAt }).eq("id", id);
+    if (error) setItems(previous);
   }
 
   return <section className="notification-panel" aria-label="Recent notifications">

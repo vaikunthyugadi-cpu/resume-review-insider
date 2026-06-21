@@ -1131,3 +1131,243 @@ html[data-theme="dark"] .notification-heading > span { color: #67aef2; backgroun
   .admin-metrics .stat-card:last-child { grid-column: auto; }
   .admin-table { min-width: 620px; }
 }
+
+/* Professional visual polish and motion */
+:root {
+  --shadow-soft: 0 10px 30px rgba(31,35,40,.07);
+  --shadow-lift: 0 16px 38px rgba(10,102,194,.12);
+}
+
+body {
+  background-image:
+    radial-gradient(circle at 8% 8%, rgba(10,102,194,.055), transparent 24rem),
+    radial-gradient(circle at 92% 78%, rgba(8,120,85,.045), transparent 28rem);
+  background-attachment: fixed;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid rgba(10,102,194,.32);
+  outline-offset: 2px;
+}
+
+.button {
+  position: relative;
+  overflow: hidden;
+}
+
+.button::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg,transparent 20%,rgba(255,255,255,.28) 48%,transparent 76%);
+  content: "";
+  pointer-events: none;
+  transform: translateX(-130%);
+  transition: transform .65s ease;
+}
+
+.button:hover::after {
+  transform: translateX(130%);
+}
+
+.portal-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.portal-hero::before,
+.portal-hero::after {
+  position: absolute;
+  z-index: -1;
+  width: 280px;
+  height: 280px;
+  background: rgba(10,102,194,.07);
+  border: 1px solid rgba(10,102,194,.09);
+  border-radius: 50%;
+  content: "";
+  filter: blur(1px);
+}
+
+.portal-hero::before {
+  top: -120px;
+  left: -70px;
+  animation: decorative-float 9s ease-in-out infinite;
+}
+
+.portal-hero::after {
+  right: -90px;
+  bottom: -150px;
+  width: 360px;
+  height: 360px;
+  animation: decorative-float 11s ease-in-out -3s infinite reverse;
+}
+
+.portal-hero-copy {
+  position: relative;
+  z-index: 1;
+}
+
+.portal-kicker,
+.portal-hero h1,
+.portal-hero-copy > p,
+.portal-search,
+.portal-trust {
+  animation: surface-in .55s ease both;
+}
+
+.portal-hero h1 { animation-delay: .07s; }
+.portal-hero-copy > p { animation-delay: .12s; }
+.portal-search { animation-delay: .18s; }
+.portal-trust { animation-delay: .24s; }
+
+.stat-card,
+.panel,
+.notification-panel,
+.admin-role-hero {
+  animation: surface-in .42s ease both;
+}
+
+.stat-grid .stat-card:nth-child(2),
+.admin-metrics .stat-card:nth-child(2) { animation-delay: .04s; }
+.stat-grid .stat-card:nth-child(3),
+.admin-metrics .stat-card:nth-child(3) { animation-delay: .08s; }
+.stat-grid .stat-card:nth-child(4),
+.admin-metrics .stat-card:nth-child(4) { animation-delay: .12s; }
+.admin-metrics .stat-card:nth-child(5) { animation-delay: .16s; }
+
+.stat-card,
+.panel,
+.category-card,
+.benefit-grid article,
+.queue-row,
+.pricing-admin-card,
+.admin-person-card,
+.admin-compact-card,
+.notification-item,
+.package-picker button,
+.upload-box {
+  transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease, background-color .22s ease;
+}
+
+.stat-card:hover,
+.pricing-admin-card:hover {
+  border-color: #bfd6eb;
+  box-shadow: var(--shadow-soft);
+  transform: translateY(-2px);
+}
+
+.category-card:hover,
+.benefit-grid article:hover,
+.queue-row:hover,
+.admin-person-card:hover,
+.admin-compact-card:hover,
+.notification-item:hover,
+.package-picker button:hover {
+  box-shadow: var(--shadow-lift);
+  transform: translateY(-3px);
+}
+
+.upload-box:hover {
+  color: #0a66c2;
+  background: #f3f8fd;
+  border-color: #0a66c2;
+}
+
+.upload-box:hover .upload-icon {
+  transform: translateY(-2px);
+}
+
+.upload-icon,
+.company-logo,
+.avatar,
+.theme-toggle-icon {
+  transition: transform .22s ease, background-color .22s ease;
+}
+
+.data-row:hover .company-logo,
+.queue-row:hover .avatar,
+.profile-summary:hover .avatar {
+  transform: scale(1.06);
+}
+
+.score-picker button {
+  transition: transform .16s ease, color .16s ease, background-color .16s ease, border-color .16s ease;
+}
+
+.score-picker button:hover {
+  border-color: #0a66c2;
+  transform: translateY(-2px);
+}
+
+.admin-role-switch button.active {
+  position: relative;
+}
+
+.admin-role-switch button.active::after {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 8px;
+  height: 8px;
+  background: #0a66c2;
+  border-radius: 50%;
+  box-shadow: 0 0 0 5px rgba(10,102,194,.1);
+  content: "";
+}
+
+.form-success,
+.form-error {
+  animation: notice-in .25s ease both;
+}
+
+html[data-theme="dark"] body {
+  background-image:
+    radial-gradient(circle at 8% 8%, rgba(103,174,242,.075), transparent 24rem),
+    radial-gradient(circle at 92% 78%, rgba(65,175,137,.055), transparent 28rem);
+}
+
+html[data-theme="dark"] .stat-card:hover,
+html[data-theme="dark"] .pricing-admin-card:hover,
+html[data-theme="dark"] .category-card:hover,
+html[data-theme="dark"] .benefit-grid article:hover,
+html[data-theme="dark"] .queue-row:hover {
+  border-color: #4c6278;
+  box-shadow: 0 16px 38px rgba(0,0,0,.22);
+}
+
+html[data-theme="dark"] .upload-box:hover {
+  color: #67aef2;
+  background: #202a35;
+  border-color: #67aef2;
+}
+
+@keyframes surface-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes notice-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes decorative-float {
+  0%, 100% { transform: translate3d(0,0,0); }
+  50% { transform: translate3d(18px,14px,0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *,
+  *::before,
+  *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+  }
+}

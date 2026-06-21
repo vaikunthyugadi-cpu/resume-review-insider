@@ -14,10 +14,13 @@ export function NewReviewForm({ companies, packages }: { companies: Company[]; p
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (loading) return;
     if (!file) return setMessage("Choose a PDF, DOC, or DOCX resume.");
     if (file.size > 10 * 1024 * 1024) return setMessage("Resume files must be 10 MB or smaller.");
     const allowed = ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
     if (!allowed.includes(file.type)) return setMessage("Only PDF, DOC, and DOCX files are supported.");
+    if (!selectedPackage) return setMessage("No active review packages are available.");
+    if (!companies.length) return setMessage("No companies are currently accepting reviews.");
 
     setLoading(true);
     setMessage("");
@@ -26,13 +29,6 @@ export function NewReviewForm({ companies, packages }: { companies: Company[]; p
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return router.push("/login");
     const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-    if (!selectedPackage) return setMessage("No active review packages are available.");
-    const { error: purchaseError } = await supabase.rpc("purchase_package_demo", { p_package_id: selectedPackage.id });
-    if (purchaseError) {
-      setMessage(purchaseError.message);
-      setLoading(false);
-      return;
-    }
     const path = `${user.id}/${crypto.randomUUID()}-${safeName}`;
     const { error: uploadError } = await supabase.storage.from("resumes").upload(path, file, {
       cacheControl: "3600",
@@ -58,12 +54,17 @@ export function NewReviewForm({ companies, packages }: { companies: Company[]; p
       setLoading(false);
       return;
     }
-    const { error } = await supabase.rpc("create_review_request", {
-      selected_resume: resume.id,
-      selected_company: String(form.get("companyId")),
-      requested_role: String(form.get("targetRole"))
+    const { error } = await supabase.rpc("purchase_and_create_review_request", {
+      p_package_id: selectedPackage.id,
+      p_resume_id: resume.id,
+      p_company_id: String(form.get("companyId")),
+      p_target_role: String(form.get("targetRole"))
     });
     if (error) {
+      await Promise.all([
+        supabase.from("resumes").delete().eq("id", resume.id),
+        supabase.storage.from("resumes").remove([path])
+      ]);
       setMessage(error.message);
       setLoading(false);
       return;
@@ -85,14 +86,21 @@ export function NewReviewForm({ companies, packages }: { companies: Company[]; p
         </div>
       </fieldset>
       <label className="upload-box">
-        <input type="file" accept=".pdf,.doc,.docx" onChange={(event) => setFile(event.target.files?.[0] ?? null)} />
+        <input
+          type="file"
+          accept=".pdf,.doc,.docx"
+          onChange={(event) => {
+            setFile(event.target.files?.[0] ?? null);
+            setMessage("");
+          }}
+        />
         <span className="upload-icon">↑</span>
         <strong>{file ? file.name : "Upload your resume"}</strong>
         <small>{file ? `${(file.size / 1024 / 1024).toFixed(2)} MB` : "PDF, DOC, or DOCX · Maximum 10 MB"}</small>
       </label>
-      <div className="payment-note"><span>i</span><p><strong>Package selection is recorded now.</strong> Payment processing can be enabled when a payment provider is connected.</p></div>
-      {message && <p className="form-error">{message}</p>}
-      <button className="button button-primary button-block" disabled={loading || !selectedPackage}>{loading ? "Uploading securely..." : selectedPackage ? `Purchase and submit · £${(selectedPackage.price_pence / 100).toFixed(2)}` : "No packages available"}</button>
+      <div className="payment-note"><span>i</span><p><strong>Secure demo purchase.</strong> The package and request are saved together, so a failed submission will not consume credits.</p></div>
+      {message && <p className="form-error" role="alert">{message}</p>}
+      <button className="button button-primary button-block" disabled={loading || !selectedPackage || !companies.length}>{loading ? "Submitting securely..." : selectedPackage ? `Purchase and submit · £${(selectedPackage.price_pence / 100).toFixed(2)}` : "No packages available"}</button>
     </form>
   );
 }

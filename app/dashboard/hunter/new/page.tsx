@@ -5,17 +5,22 @@ import type { Company, ReviewPackage } from "@/lib/types";
 
 export default async function NewReviewPage() {
   const { supabase, profile } = await requireProfile("hunter");
-  const { data } = await supabase.from("companies").select("id, name, slug, verified_reviewer_count").eq("is_active", true).gt("verified_reviewer_count", 0).order("name");
+  const [{ data, error: companiesError }, { data: packageData, error: packagesError }] = await Promise.all([
+    supabase.from("companies").select("id, name, slug, verified_reviewer_count").eq("is_active", true).gt("verified_reviewer_count", 0).order("name"),
+    supabase.from("review_packages").select("id, name, review_count, price_pence").eq("is_active", true).order("sort_order")
+  ]);
   const companies = (data ?? []) as Company[];
-  const { data: packageData } = await supabase.from("review_packages").select("id, name, review_count, price_pence").eq("is_active", true).order("sort_order");
   const packages = (packageData ?? []) as ReviewPackage[];
+  const loadError = companiesError || packagesError;
 
   return (
     <DashboardShell profile={profile} active="new">
       <div className="page-heading"><div><h1>Submit your resume</h1><p>Choose a target company, upload your CV, and enter the review queue.</p></div></div>
       <div className="form-page-grid">
         <section className="panel">
-          <NewReviewForm companies={companies} packages={packages} />
+          {loadError
+            ? <p className="form-error" role="alert">Submission options could not be loaded. Please refresh and try again.</p>
+            : <NewReviewForm companies={companies} packages={packages} />}
         </section>
         <aside className="panel process-panel">
           <h2>What happens next?</h2>
