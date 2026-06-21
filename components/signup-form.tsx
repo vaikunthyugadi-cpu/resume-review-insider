@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { UserRole } from "@/lib/types";
 
-type Company = { id: string; name: string };
+type Company = { id: string; name: string; contact_email: string | null };
 
 export function SignupForm({ initialRole }: { initialRole: UserRole }) {
   const [role, setRole] = useState<UserRole>(initialRole);
@@ -16,7 +16,7 @@ export function SignupForm({ initialRole }: { initialRole: UserRole }) {
 
   useEffect(() => {
     const supabase = createClient();
-    void supabase.from("companies").select("id, name").eq("is_active", true).order("name")
+    void supabase.from("companies").select("id, name, contact_email").eq("is_active", true).order("name")
       .then(({ data, error }) => {
         if (error) setMessage("Companies could not be loaded. Please refresh and try again.");
         else setCompanies(data ?? []);
@@ -42,8 +42,12 @@ export function SignupForm({ initialRole }: { initialRole: UserRole }) {
 
     if (role === "reviewer" && company) {
       const emailDomain = email.split("@")[1]?.toLowerCase() ?? "";
+      const approvedDomain = company.contact_email?.split("@")[1]?.toLowerCase();
       const companyToken = company.name.toLowerCase().split(/\s+/)[0].replace(/[^a-z0-9]/g, "");
-      if (!companyToken || !emailDomain.includes(companyToken)) {
+      const domainMatches = approvedDomain
+        ? emailDomain === approvedDomain
+        : Boolean(companyToken && emailDomain.includes(companyToken));
+      if (!domainMatches) {
         setMessage(`Use a ${company.name} work email address to register as a Reviewer.`);
         setLoading(false);
         return;

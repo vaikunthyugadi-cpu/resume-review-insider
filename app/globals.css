@@ -1371,3 +1371,199 @@ html[data-theme="dark"] .upload-box:hover {
     transition-duration: .01ms !important;
   }
 }
+
+/* Refined professional theme and more readable supporting text */
+:root {
+  --navy: #153f52;
+  --navy-2: #1d5366;
+  --ink: #243842;
+  --muted: #60747e;
+  --mint: #6ed7bd;
+  --mint-dark: #147f6d;
+  --mint-soft: #eaf8f4;
+  --cream: #f4f7f8;
+  --line: #d9e4e8;
+  --shadow: 0 22px 60px rgba(21,63,82,.11);
+  --font-sans: "Segoe UI Variable Text", "Segoe UI", Inter, ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--cream);
+  background-image:
+    radial-gradient(circle at 4% 8%, rgba(20,127,109,.075), transparent 25rem),
+    radial-gradient(circle at 95% 18%, rgba(39,111,159,.07), transparent 28rem),
+    linear-gradient(180deg, rgba(255,255,255,.45), transparent 34rem);
+}
+
+.page-heading h1,
+.dashboard-topbar h2,
+.panel h2,
+.panel-heading h2,
+.auth-card h2,
+.portal-hero h1,
+.portal-section-heading h2,
+.portal-banner h2,
+.portal-cta h2,
+.stat-card strong {
+  font-family: var(--font-sans);
+  font-weight: 720;
+  letter-spacing: -.035em;
+}
+
+.dashboard-topbar {
+  box-shadow: 0 8px 28px rgba(21,63,82,.045);
+}
+
+.panel,
+.notification-panel,
+.stat-card {
+  border-color: #dbe5e9;
+  box-shadow: 0 10px 32px rgba(21,63,82,.055);
+}
+
+.panel,
+.notification-panel {
+  position: relative;
+  overflow: hidden;
+}
+
+.panel::before,
+.notification-panel::before {
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--mint-dark), #4a91c6 48%, transparent 88%);
+  content: "";
+  opacity: .8;
+}
+
+.eyebrow,
+.dashboard-topbar p {
+  font-size: 12px;
+}
+
+.nav-link,
+.button {
+  font-size: 14px;
+}
+
+label,
+legend,
+.role-picker strong,
+.row-main strong,
+.queue-row strong,
+.reviewer-chip strong,
+.admin-table,
+.admin-table strong,
+.admin-card-main strong,
+.admin-compact-card strong {
+  font-size: 13px;
+}
+
+.role-picker span,
+.profile-summary small,
+.stat-card span,
+.stat-card small,
+.panel-heading p,
+.row-main small,
+.queue-row small,
+.date-note,
+.process-panel p,
+.upload-box small,
+.package-picker small,
+.existing-rating small,
+.notification-item p,
+.notification-item small,
+.admin-card-main small,
+.admin-compact-card small,
+.admin-list-heading small,
+.pricing-admin-card small {
+  font-size: 11px;
+}
+
+.notification-item strong,
+.support-card strong,
+.process-panel strong,
+.feedback-block h3,
+.completed-feedback h3,
+.back-link,
+.payment-note,
+.empty-inline {
+  font-size: 12px;
+}
+
+.status,
+.live-pill,
+.admin-action,
+.admin-actions button,
+.admin-table th,
+.package-picker i {
+  font-size: 10px;
+}
+
+.notification-item {
+  min-height: 76px;
+  padding: 14px;
+  background: linear-gradient(135deg,#f8fbfc 0%,#f3f8fa 100%);
+  border-radius: 12px;
+}
+
+.notification-item p {
+  margin: 5px 0;
+  line-height: 1.55;
+}
+
+.stat-card::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg,var(--mint-dark),#4a91c6);
+  content: "";
+  opacity: .75;
+}
+
+.admin-company-form {
+  padding: 16px;
+  background:
+    radial-gradient(circle at 100% 0,rgba(74,145,198,.08),transparent 10rem),
+    #fff;
+}
+
+.admin-company-form label + label {
+  margin-top: 2px;
+}
+
+.admin-compact-card small + small {
+  margin-top: 2px;
+}
+
+html[data-theme="dark"] body {
+  background-image:
+    radial-gradient(circle at 5% 8%,rgba(28,139,119,.12),transparent 25rem),
+    radial-gradient(circle at 95% 18%,rgba(56,126,181,.12),transparent 28rem);
+}
+
+html[data-theme="dark"] .notification-item {
+  background: linear-gradient(135deg,#1b2228 0%,#182027 100%);
+}
+
+html[data-theme="dark"] .admin-company-form {
+  background:
+    radial-gradient(circle at 100% 0,rgba(74,145,198,.1),transparent 10rem),
+    #171b20;
+}
+
+@media (max-width: 780px) {
+  .eyebrow,
+  .dashboard-topbar p { font-size: 11px; }
+  .page-heading p,
+  .panel-heading p,
+  .row-main small,
+  .queue-row small,
+  .date-note { font-size: 11px; }
+  .dashboard-sidebar nav a { font-size: 11px; }
+}

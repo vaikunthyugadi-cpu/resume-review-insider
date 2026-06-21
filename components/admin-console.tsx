@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 type Metrics = { users?: number; hunters?: number; reviewers?: number; pending_reviewers?: number; open_requests?: number; completed_requests?: number; open_complaints?: number };
 type UserRow = { id: string; full_name?: string; email?: string; user_type?: string; account_status?: string; request_count?: number; created_at?: string };
 type ReviewerRow = { user_id: string; full_name?: string; email?: string; company_name?: string; job_title?: string; verification_status?: string };
-type CompanyRow = { id: string; name?: string; is_active?: boolean; active?: boolean; verified_reviewer_count?: number };
+type CompanyRow = { id: string; name?: string; contact_email?: string; is_active?: boolean; active?: boolean; verified_reviewer_count?: number };
 type RequestRow = { id: string; target_role?: string; status?: string; company_name?: string; hunter_name?: string; reviewer_name?: string; created_at?: string };
 type ComplaintRow = { id: string; category?: string; details?: string; status?: string; created_at?: string };
 type PackageRow = { id: string; name: string; review_count: number; price_pence: number; is_active: boolean; sort_order: number };
@@ -73,11 +73,15 @@ export function AdminConsole({ initialData }: { initialData: AdminDashboardData 
     const formElement = event.currentTarget;
     const form = new FormData(formElement);
     const companyName = String(form.get("companyName") ?? "").trim();
-    if (!companyName) {
-      setNotice("Company name is required.");
+    const companyEmail = String(form.get("companyEmail") ?? "").trim().toLowerCase();
+    if (!companyName || !companyEmail) {
+      setNotice("Company name and email are required.");
       return;
     }
-    const saved = await run("admin_create_company", { p_company_name: companyName }, "company-create");
+    const saved = await run("admin_create_company", {
+      p_company_name: companyName,
+      p_company_email: companyEmail
+    }, "company-create");
     if (saved) formElement.reset();
   }
 
@@ -177,13 +181,14 @@ function ReviewerPage({ reviewers, reviewerProfiles, pendingCount, companies, re
           <div className="admin-list-heading"><div><strong>Companies</strong></div></div>
           <form className="admin-company-form" onSubmit={createCompany}>
             <label>New company name<input name="companyName" required minLength={2} placeholder="Example: Google" /></label>
+            <label>Company email<input name="companyEmail" type="email" required autoComplete="email" placeholder="careers@company.com" /></label>
             <button className="button button-primary" disabled={busy === "company-create"}>{busy === "company-create" ? "Adding..." : "Add company"}</button>
           </form>
           <div className="admin-card-list">
             {companies.length ? companies.map((company) => {
               const active = company.is_active ?? company.active ?? true;
               return <article className="admin-compact-card" key={company.id}>
-                <div><strong>{company.name || "Company"}</strong><small>{company.verified_reviewer_count ?? 0} verified reviewers</small></div>
+                <div><strong>{company.name || "Company"}</strong><small>{company.contact_email || "Email not added"}</small><small>{company.verified_reviewer_count ?? 0} verified reviewers</small></div>
                 <button className="admin-action" disabled={busy === company.id} onClick={() => run("admin_set_company_status", { selected_company: company.id, active: !active }, company.id)}>{active ? "Pause" : "Enable"}</button>
               </article>;
             }) : <p className="empty-inline">No companies.</p>}

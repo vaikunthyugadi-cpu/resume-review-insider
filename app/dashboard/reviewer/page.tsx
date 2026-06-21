@@ -22,11 +22,12 @@ export default async function ReviewerDashboard(){
   const queue=all.filter(item=>item.status==="open");
   const claimed=all.filter(item=>item.status==="claimed"&&item.claimed_by===profile.id);
   const completed=all.filter(item=>item.status==="completed"&&item.claimed_by===profile.id);
+  const notifications=((notificationData??[]) as NotificationRow[]).filter(item=>item.title!=="New resume request"||queue.length>0);
   const earnings=(earningData??[]) as EarningRow[]; const total=earnings.reduce((sum,item)=>sum+item.amount_pence,0);
   return <DashboardShell profile={profile} active="overview">
     <div className="page-heading"><div><h1>Reviews at a glance</h1><p>Help candidates sharpen their story. Earnings unlock after strong Hunter scores.</p></div></div>
     {requestsError&&<p className="form-error" role="alert">Reviews could not be loaded. Please refresh and try again.</p>}
-    <NotificationCenter initialItems={(notificationData??[]) as NotificationRow[]} />
+    <NotificationCenter initialItems={notifications} />
     <section className="stat-grid"><Stat label="Open requests" value={queue.length} note={`For ${profile.company_name??"your company"}`} /><Stat label="In progress" value={claimed.length} note="Claimed reviews" /><Stat label="Completed" value={completed.length} note="Available history" /><Stat label="Recorded earnings" value={`£${(total/100).toFixed(2)}`} note="Unlocked above 7/10" /></section>
     {!profile.work_email_verified&&<section className="panel verification-banner"><strong>Verify your work email to start reviewing</strong><p>Confirm the link sent to your company email. An administrator can also review your account if additional verification is needed.</p></section>}
     {profile.work_email_verified&&<><section className="panel" id="queue"><div className="panel-heading"><div><h2>Open review queue</h2><p>Requests are limited to your verified company. The first reviewer to start claims the work for 48 hours.</p></div><span className="live-pill">Live queue</span></div>{queue.length?<div className="queue-list">{queue.map(item=><article className="queue-row" key={item.id}><span className="avatar">{initials(item.hunter_name)}</span><div><strong>{item.hunter_name}</strong><small>{item.target_role}</small></div><span className="date-note">{new Date(item.created_at).toLocaleDateString()}</span><Link className="button button-primary" href={`/dashboard/reviewer/reviews/${item.id}`}>Start review</Link></article>)}</div>:<div className="empty-inline"><strong>The queue is clear</strong><span>New submissions for {profile.company_name} will appear here.</span></div>}</section>
