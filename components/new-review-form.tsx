@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import type { Company, ReviewPackage } from "@/lib/types";
 
-export function NewReviewForm({ companies, packages }: { companies: Company[]; packages: ReviewPackage[] }) {
+export function NewReviewForm({ companies, packages, initialCompanyId }: { companies: Company[]; packages: ReviewPackage[]; initialCompanyId?: string }) {
   const router = useRouter();
   const [selectedPackage, setSelectedPackage] = useState(packages[0]);
   const [file, setFile] = useState<File | null>(null);
@@ -76,7 +76,7 @@ export function NewReviewForm({ companies, packages }: { companies: Company[]; p
   return (
     <form className="submission-form" onSubmit={submit}>
       <div className="field-grid">
-        <label>Target company<select name="companyId" required defaultValue=""><option value="" disabled>Select a company</option>{companies.map((company) => <option value={company.id} key={company.id}>{company.name}</option>)}</select></label>
+        <label>Target company<select name="companyId" required defaultValue={initialCompanyId ?? ""}><option value="" disabled>Select a company</option>{companies.map((company) => <option value={company.id} key={company.id}>{company.name}</option>)}</select></label>
         <label>Target role<input name="targetRole" required placeholder="e.g. Product Manager" /></label>
       </div>
       <fieldset>
